@@ -7,9 +7,18 @@
 PID turnPid(0.55, 0.005, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
 PID movePid(0.09, 0.00, 0.07, 15);
 
+bool stopThreads;
+
+int robot_x;
+int robot_y;
+
+int lastEncoderPositionX;
+int lastEncoderPositionY;
+
 
 void init()
 {
+  stopThreads = true;
   PositionUpdateRate = 50;
 }
 

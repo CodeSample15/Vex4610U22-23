@@ -1,4 +1,6 @@
 #include <string>
+#include "UserDefined/functions.h"
+#include "UserDefined/points.h"
 #include "main.h"
 
 void display()
