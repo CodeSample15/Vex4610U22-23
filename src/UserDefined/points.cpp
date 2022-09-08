@@ -1,5 +1,5 @@
 #include "UserDefined/points.h"
-#include "UserDefined/functions.h"
+#include "UserDefined/methods.h"
 #include <cmath>
 
 Points::Points()

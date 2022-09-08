@@ -1,5 +1,5 @@
 #include <string>
-#include "UserDefined/functions.h"
+#include "UserDefined/methods.h"
 #include "UserDefined/points.h"
 #include "main.h"
 
