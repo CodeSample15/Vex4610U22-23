@@ -19,7 +19,6 @@ extern PID movePid;
 extern int robot_x;
 extern int robot_y;
 
-extern int lastEncoderPositionX;
 extern int lastEncoderPositionY;
 
 //milliseconds between each position update

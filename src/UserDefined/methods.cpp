@@ -12,7 +12,6 @@ bool stopThreads;
 int robot_x;
 int robot_y;
 
-int lastEncoderPositionX;
 int lastEncoderPositionY;
 
 
@@ -27,7 +26,6 @@ void reset()
   robot_x = 0;
   robot_y = 0;
 
-  lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
 
   yEncoder.reset();
@@ -61,4 +59,22 @@ void update_pos()
 Points getPositionXY()
 {
   return Points((double)robot_x, (double)robot_y);
+}
+
+
+//movement stuff
+void hardDriveStop() {
+
+}
+
+void Move(int amount, int speed, bool hardstop) {
+  
+}
+
+void Move(PID& pid, int amount, double speed) {
+
+}
+
+void Move(PID& pid, PID& turnPID, int amount, double speed) {
+  
 }

@@ -1,9 +1,11 @@
 #include "api.h"
 
-#define RIGHT_MOTOR_PORT 1
-#define LEFT_MOTOR_PORT 2
+#define RIGHT_FRONT_PORT 1
+#define RIGHT_BACK_PORT 2
+#define LEFT_FRONT_PORT 3
+#define LEFT_BACK_PORT 4
 
-#define GYRO_PORT 3
+#define GYRO_PORT 5
 
 #define Y_ENCODER_TOP_PORT 'A'
 #define Y_ENCODER_BOTTOM_PORT 'B'
@@ -11,8 +13,11 @@
 
 extern pros::Controller controller;
 
-extern pros::Motor RightMotor;
-extern pros::Motor LeftMotor;
+extern pros::Motor RightFront;
+extern pros::Motor RightBack;
+
+extern pros::Motor LeftFront;
+extern pros::Motor LeftBack;
 
 extern pros::Imu gyro;
 
