@@ -82,7 +82,7 @@ void hardDriveStop()
   LeftFront.brake();
   LeftBack.brake();
 
-  while(RightFront.get_actual_velocity() > 1)
+  while(abs(RightFront.get_actual_velocity()) > 1)
     pros::delay(10);
 }
 
@@ -133,13 +133,30 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
 
   do {
     speed = pid.calculate(yEncoder.get_value(), amount) * speed;
-    turnAmount = turnPID.calculate(startRot, gyro.get_rotation());
+    turnAmount = turnPID.calculate(gyro.get_rotation(), startRot);
 
-    RightFront.move(speed + turnAmount);
-    RightBack.move(speed + turnAmount);
-    LeftFront.move(speed - turnAmount);
-    LeftBack.move(speed - turnAmount);
-  } while(abs((int)pid.error) < 2 && abs((int)turnPID.error) < 3);
+    RightFront.move(speed - turnAmount);
+    RightBack.move(speed - turnAmount);
+    LeftFront.move(speed + turnAmount);
+    LeftBack.move(speed + turnAmount);
+  } while(abs((int)pid.error) > 2 || abs((int)turnPID.error) > 3);
+
+  hardDriveStop();
+}
+
+
+void Turn(PID& turnPid, int amount, double speed) 
+{
+  int startRot = gyro.get_rotation();
+
+  do {
+    speed = turnPid.calculate(gyro.get_rotation(), amount - startRot) * speed;
+
+    RightFront.move(-speed);
+    RightBack.move(-speed);
+    LeftFront.move(speed);
+    LeftBack.move(speed);
+  } while(abs((int)turnPid.error) > 3);
 
   hardDriveStop();
 }

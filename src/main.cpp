@@ -12,10 +12,11 @@ void display()
 	while(true) {
 		pros::lcd::set_text(1, "X Position: " + std::to_string(robot_x));
 		pros::lcd::set_text(2, "Y Position: " + std::to_string(robot_y));
-		pros::lcd::set_text(3, "Right front temp: " + std::to_string(RightFront.get_temperature()));
-		pros::lcd::set_text(4, "Right back temp: " + std::to_string(RightBack.get_temperature()));
-		pros::lcd::set_text(5, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
-		pros::lcd::set_text(6, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
+		pros::lcd::set_text(3, "Robot rotation: " + std::to_string(gyro.get_rotation()));
+		pros::lcd::set_text(4, "Right front temp: " + std::to_string(RightFront.get_temperature()));
+		pros::lcd::set_text(5, "Right back temp: " + std::to_string(RightBack.get_temperature()));
+		pros::lcd::set_text(6, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
+		pros::lcd::set_text(7, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
 
 		pros::delay(20);
 
@@ -50,8 +51,8 @@ void opcontrol() {
 	int leftSpeed;
 
 	while (true) {
-		rightSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) + controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-		leftSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) - controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		rightSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) - controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		leftSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) + controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
 		RightFront.move(rightSpeed);
 		RightBack.move(rightSpeed);
