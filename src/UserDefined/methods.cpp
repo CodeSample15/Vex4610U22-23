@@ -47,11 +47,9 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   gyro.reset();
 }
 
-void update_pos()
+void update_pos() //this should ALWAYS be running to keep track of the robot's position
 {
-  stopThreads = false; //threads start running, make sure they don't stop until a reset is called
-
-  while (!stopThreads) {
+  while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
     int yDist = yEncoder.get_value() - lastEncoderPositionY;
 

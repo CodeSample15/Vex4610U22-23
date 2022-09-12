@@ -4,29 +4,32 @@
 #include "robot.h"
 #include "main.h"
 
+using namespace pros;
+
 void display()
 {
 	//thread to display important debug information
-	pros::lcd::initialize();
+	lcd::initialize();
 
 	while(true) {
-		pros::lcd::set_text(1, "X Position: " + std::to_string(robot_x));
-		pros::lcd::set_text(2, "Y Position: " + std::to_string(robot_y));
-		pros::lcd::set_text(3, "Robot rotation: " + std::to_string(gyro.get_rotation()));
-		pros::lcd::set_text(4, "Right front temp: " + std::to_string(RightFront.get_temperature()));
-		pros::lcd::set_text(5, "Right back temp: " + std::to_string(RightBack.get_temperature()));
-		pros::lcd::set_text(6, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
-		pros::lcd::set_text(7, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
+		lcd::set_text(1, "X Position: " + std::to_string(robot_x));
+		lcd::set_text(2, "Y Position: " + std::to_string(robot_y));
+		lcd::set_text(3, "Rotation: " + std::to_string(gyro.get_rotation()));
+		lcd::set_text(4, "Right front temp: " + std::to_string(RightFront.get_temperature()));
+		lcd::set_text(5, "Right back temp: " + std::to_string(RightBack.get_temperature()));
+		lcd::set_text(6, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
+		lcd::set_text(7, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
 
-		pros::delay(20);
+		delay(20);
 
-		pros::lcd::clear();
+		lcd::clear();
 	}
 }
 
 void initialize()
 {
-	pros::Task t(display); //start the display task
+	Task d(display); //start the display task
+	Task t(update_pos); //start keeping track of the robot's position
 
 	init(); //all the initialization will happen in the methods file 
 }
@@ -51,14 +54,14 @@ void opcontrol() {
 	int leftSpeed;
 
 	while (true) {
-		rightSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) - controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-		leftSpeed = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) + controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 
 		RightFront.move(rightSpeed);
 		RightBack.move(rightSpeed);
 		LeftFront.move(leftSpeed);
 		LeftBack.move(leftSpeed);
 
-		pros::delay(20);
+		delay(20);
 	}
 }
