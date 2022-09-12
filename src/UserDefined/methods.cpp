@@ -17,23 +17,34 @@ int lastEncoderPositionY;
 
 void init()
 {
-  stopThreads = true;
-  PositionUpdateRate = 50;
-}
-
-void reset()
-{
   robot_x = 0;
   robot_y = 0;
 
   lastEncoderPositionY = 0;
 
+  stopThreads = true;
+  PositionUpdateRate = 50;
+
+  RightFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  RightBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  LeftFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+  LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+
+  //calibrate imu
+  while(gyro.is_calibrating())
+    pros::delay(10);
+}
+
+void reset() //shouldn't really be a need for this, but I'm putting this here just in case
+{
+  //reset position 
+  robot_x = 0;
+  robot_y = 0;
+  lastEncoderPositionY = 0;
   yEncoder.reset();
 
   //reset IMU
   gyro.reset();
-  while(gyro.is_calibrating())
-    pros::delay(10);
 }
 
 void update_pos()
@@ -62,19 +73,73 @@ Points getPositionXY()
 }
 
 
-//movement stuff
-void hardDriveStop() {
+//movement stuff (all of the drivetrain stuff will run with motor.move)
+void hardDriveStop() 
+{
+  //may look pretty simple and unnecessary, but it plays a huge role of giving the bot enough time to fully slow down before continuing. Otherwise the bot may overshoot from not getting rid of all its momentum 
+  RightFront.brake();
+  RightBack.brake();
+  LeftFront.brake();
+  LeftBack.brake();
 
+  while(RightFront.get_actual_velocity() > 1)
+    pros::delay(10);
 }
 
-void Move(int amount, int speed, bool hardstop) {
-  
+
+void Move(int amount, int speed, bool hardstop) 
+{
+  yEncoder.reset();
+
+  if(amount > 0)
+    speed *= -1;
+
+  while(abs(yEncoder.get_value()) < amount) {
+    RightFront.move(speed);
+    RightBack.move(speed);
+    LeftFront.move(speed);
+    LeftBack.move(speed);
+  }
+
+  if(hardstop) {
+    hardDriveStop();
+  }
 }
 
-void Move(PID& pid, int amount, double speed) {
 
+void Move(PID& pid, int amount, double speed) 
+{
+  yEncoder.reset();
+
+  do {
+    speed = pid.calculate(yEncoder.get_value(), amount) * speed;
+
+    RightFront.move(speed);
+    RightBack.move(speed);
+    LeftFront.move(speed);
+    LeftBack.move(speed);
+  } while(abs((int)pid.error) > 2);
+
+  hardDriveStop();
 }
 
-void Move(PID& pid, PID& turnPID, int amount, double speed) {
-  
+
+void Move(PID& pid, PID& turnPID, int amount, double speed) 
+{
+  yEncoder.reset();
+  double startRot = gyro.get_rotation(); //so that the current rotation of the gyro doesn't get messed up. This is for position tracking purposes and should be remove if we get a second gyro
+
+  double turnAmount = 0;
+
+  do {
+    speed = pid.calculate(yEncoder.get_value(), amount) * speed;
+    turnAmount = turnPID.calculate(startRot, gyro.get_rotation());
+
+    RightFront.move(speed + turnAmount);
+    RightBack.move(speed + turnAmount);
+    LeftFront.move(speed - turnAmount);
+    LeftBack.move(speed - turnAmount);
+  } while(abs((int)pid.error) < 2 && abs((int)turnPID.error) < 3);
+
+  hardDriveStop();
 }
