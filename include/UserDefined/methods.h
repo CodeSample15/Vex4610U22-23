@@ -21,9 +21,6 @@ extern int robot_y;
 
 extern int lastEncoderPositionY;
 
-//milliseconds between each position update
-extern int PositionUpdateRate; //should NEVER be zero. Thread will take up entire processor usage and stop the code from running
-
 extern bool stopThreads;
 
 //functions used by the main file

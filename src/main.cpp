@@ -28,10 +28,8 @@ void display()
 
 void initialize()
 {
-	Task d(display); //start the display task
-	Task t(update_pos); //start keeping track of the robot's position
-
-	init(); //all the initialization will happen in the methods file 
+	Task d(display);
+	init(); //all the initialization will happen in the methods file
 }
 
 void disabled() {}

@@ -7,8 +7,7 @@
 
 #define GYRO_PORT 5
 
-#define Y_ENCODER_TOP_PORT 'A'
-#define Y_ENCODER_BOTTOM_PORT 'B'
+#define Y_ENCODER_PORT 6
 
 
 extern pros::Controller controller;
@@ -21,4 +20,4 @@ extern pros::Motor LeftBack;
 
 extern pros::Imu gyro;
 
-extern pros::ADIEncoder yEncoder;
+extern pros::Rotation yEncoder;

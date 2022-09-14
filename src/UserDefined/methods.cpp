@@ -23,7 +23,6 @@ void init()
   lastEncoderPositionY = 0;
 
   stopThreads = true;
-  PositionUpdateRate = 50;
 
   RightFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   RightBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -33,6 +32,9 @@ void init()
   //calibrate imu
   while(gyro.is_calibrating())
     pros::delay(10);
+
+  //starting position tracking thread once everything is initialized
+  pros::Task t(update_pos);
 }
 
 void reset() //shouldn't really be a need for this, but I'm putting this here just in case
@@ -51,9 +53,9 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
 {
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
-    int yDist = yEncoder.get_value() - lastEncoderPositionY;
+    int yDist = yEncoder.get_position() - lastEncoderPositionY;
 
-    lastEncoderPositionY = yEncoder.get_value();
+    lastEncoderPositionY = yEncoder.get_position();
 
     //change x and y location of the robot based off of the rotation of the robot
     double rot = gyro.get_rotation();
@@ -61,7 +63,7 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     robot_x += sin(rot*PI/180) * yDist;
     robot_y += cos(rot*PI/180) * yDist;
 
-    pros::delay(PositionUpdateRate);
+    pros::delay(20);
   }
 }
 
@@ -92,7 +94,7 @@ void Move(int amount, int speed, bool hardstop)
   if(amount > 0)
     speed *= -1;
 
-  while(abs(yEncoder.get_value()) < amount) {
+  while(abs(yEncoder.get_position()) < amount) {
     RightFront.move(speed);
     RightBack.move(speed);
     LeftFront.move(speed);
@@ -110,7 +112,7 @@ void Move(PID& pid, int amount, double speed)
   yEncoder.reset();
 
   do {
-    speed = pid.calculate(yEncoder.get_value(), amount) * speed;
+    speed = pid.calculate(yEncoder.get_position(), amount) * speed;
 
     RightFront.move(speed);
     RightBack.move(speed);
@@ -130,7 +132,7 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
   double turnAmount = 0;
 
   do {
-    speed = pid.calculate(yEncoder.get_value(), amount) * speed;
+    speed = pid.calculate(yEncoder.get_position(), amount) * speed;
     turnAmount = turnPID.calculate(gyro.get_rotation(), startRot);
 
     RightFront.move(speed - turnAmount);
