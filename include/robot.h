@@ -1,13 +1,13 @@
 #include "api.h"
 
 #define RIGHT_FRONT_PORT 1
-#define RIGHT_BACK_PORT 2
-#define LEFT_FRONT_PORT 3
-#define LEFT_BACK_PORT 4
+#define RIGHT_BACK_PORT 5
+#define LEFT_FRONT_PORT 8
+#define LEFT_BACK_PORT 9
 
-#define GYRO_PORT 5
+#define GYRO_PORT 7
 
-#define Y_ENCODER_PORT 6
+#define Y_ENCODER_PORT 10
 
 
 extern pros::Controller controller;

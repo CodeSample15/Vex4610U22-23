@@ -50,16 +50,28 @@ void opcontrol() {
 	//for feeding information to the right and left motors from the controller input
 	int rightSpeed;
 	int leftSpeed;
+	double curvedTurn; //putting the turn on a curve
+	bool negative; //for after I square the value
+
+	RightFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	RightBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
 	while (true) {
-		rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-		leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
+		negative = curvedTurn < 0;
+		curvedTurn *= curvedTurn;
+		curvedTurn *= 127 * (negative ? -1 : 1);
+
+		rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn;
+		leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn;
 
 		RightFront.move(rightSpeed);
 		RightBack.move(rightSpeed);
 		LeftFront.move(leftSpeed);
 		LeftBack.move(leftSpeed);
-
+		
 		delay(20);
 	}
 }
