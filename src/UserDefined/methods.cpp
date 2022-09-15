@@ -63,7 +63,7 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     robot_x += sin(rot*PI/180) * yDist;
     robot_y += cos(rot*PI/180) * yDist;
 
-    pros::delay(20);
+    pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
 }
 
@@ -99,6 +99,8 @@ void Move(int amount, int speed, bool hardstop)
     RightBack.move(speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
+
+    pros::delay(10);
   }
 
   if(hardstop) {
@@ -118,6 +120,8 @@ void Move(PID& pid, int amount, double speed)
     RightBack.move(speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
+
+    pros::delay(10);
   } while(abs((int)pid.error) > 2);
 
   hardDriveStop();
@@ -139,6 +143,8 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
     RightBack.move(speed - turnAmount);
     LeftFront.move(speed + turnAmount);
     LeftBack.move(speed + turnAmount);
+
+    pros::delay(10);
   } while(abs((int)pid.error) > 2 || abs((int)turnPID.error) > 3);
 
   hardDriveStop();
@@ -156,7 +162,69 @@ void Turn(PID& turnPid, int amount, double speed)
     RightBack.move(-speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
+
+    pros::delay(10);
   } while(abs((int)turnPid.error) > 3);
 
   hardDriveStop();
+}
+
+void Turn(PID& turnPid, int amount, double speed, bool (*active)()) 
+{
+  int startRot = gyro.get_rotation();
+
+  do {
+    speed = turnPid.calculate(gyro.get_rotation(), amount - startRot) * speed;
+
+    RightFront.move(-speed);
+    RightBack.move(-speed);
+    LeftFront.move(speed);
+    LeftBack.move(speed);
+
+    pros::delay(10);
+  } while(abs((int)turnPid.error) > 3 && active());
+
+  hardDriveStop();
+}
+
+void TurnToRotation(PID& turnPid, int degree, double speed) 
+{
+  //get local rotation 
+  int times = (int)(gyro.get_rotation() / 360);
+  int local_rot = gyro.get_rotation() - (360 * times); 
+
+  //determine quickest way to turn to that rotation
+  int rotate_left = degree - local_rot;
+  int rotate_right = local_rot - degree;
+  int rotate = 0;
+
+  //take the least distance to travel
+  if(abs(rotate_left) < abs(rotate_right))
+    rotate = rotate_left;
+  else
+    rotate = rotate_right;
+
+  //excecute turn
+  Turn(turnPid, rotate, speed);
+}
+
+void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()) 
+{
+  //get local rotation 
+  int times = (int)(gyro.get_rotation() / 360);
+  int local_rot = gyro.get_rotation() - (360 * times); 
+
+  //determine quickest way to turn to that rotation
+  int rotate_left = degree - local_rot;
+  int rotate_right = local_rot - degree;
+  int rotate = 0;
+
+  //take the least distance to travel
+  if(abs(rotate_left) < abs(rotate_right))
+    rotate = rotate_left;
+  else
+    rotate = rotate_right;
+
+  //excecute turn
+  Turn(turnPid, rotate, speed, active);
 }

@@ -37,3 +37,7 @@ void Move(PID& pid, PID& turnPID, int amount, double speed); //move function, bu
 //void MoveUntilLine(int speed); (maybe)
 
 void Turn(PID& turnPid, int amount, double speed);
+void Turn(PID& turnPid, int amount, double speed, bool (*active)()); //with a lambda to break out of the turn if a condition is met (for autonomous turning during driver control)
+
+void TurnToRotation(PID& turnPid, int degree, double speed);
+void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()); //same thing as the turn overload (driver control autonomous turning)

@@ -59,19 +59,27 @@ void opcontrol() {
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
 	while (true) {
-		curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
-		negative = curvedTurn < 0;
-		curvedTurn *= curvedTurn;
-		curvedTurn *= 127 * (negative ? -1 : 1);
+		if(!controller.get_digital(E_CONTROLLER_DIGITAL_A)) { //auto aim button (hold to activate)
+			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
+			negative = curvedTurn < 0;
+			curvedTurn *= curvedTurn;
+			curvedTurn *= 127 * (negative ? -1 : 1); //returning the output value to the desired range
 
-		rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn;
-		leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn;
+			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn;
+			leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn;
 
-		RightFront.move(rightSpeed);
-		RightBack.move(rightSpeed);
-		LeftFront.move(leftSpeed);
-		LeftBack.move(leftSpeed);
-		
+			RightFront.move(rightSpeed);
+			RightBack.move(rightSpeed);
+			LeftFront.move(leftSpeed);
+			LeftBack.move(leftSpeed);
+		}
+		else {
+			//calculate angle to the goal x y point (hardcoded)
+
+			//excecute turn as long as the turn button is pressed
+			TurnToRotation(turnPid, 0, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+		}
+
 		delay(20);
 	}
 }
