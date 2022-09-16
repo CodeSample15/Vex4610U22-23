@@ -11,6 +11,9 @@
 #include "UserDefined/points.h"
 #include "UserDefined/pid.h"
 
+//location of the goal (TBD)
+Points target_pos(0,0);
+
 //PID objects
 extern PID turnPid;
 extern PID movePid;

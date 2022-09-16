@@ -75,9 +75,11 @@ void opcontrol() {
 		}
 		else {
 			//calculate angle to the goal x y point (hardcoded)
+			Points pos(robot_x, robot_y);
+			int targetRot = pos.angleTo(target_pos);
 
 			//excecute turn as long as the turn button is pressed
-			TurnToRotation(turnPid, 0, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
 		delay(20);
