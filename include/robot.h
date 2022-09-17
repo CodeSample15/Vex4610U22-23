@@ -7,6 +7,7 @@
 
 #define GYRO_PORT 7
 
+#define X_ENCODER_PORT 2
 #define Y_ENCODER_PORT 10
 
 
@@ -20,4 +21,5 @@ extern pros::Motor LeftBack;
 
 extern pros::Imu gyro;
 
+extern pros::Rotation xEncoder;
 extern pros::Rotation yEncoder;

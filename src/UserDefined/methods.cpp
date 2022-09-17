@@ -12,6 +12,7 @@ bool stopThreads;
 int robot_x;
 int robot_y;
 
+int lastEncoderPositionX;
 int lastEncoderPositionY;
 
 
@@ -20,6 +21,7 @@ void init()
   robot_x = 0;
   robot_y = 0;
 
+  lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
 
   stopThreads = true;
@@ -42,6 +44,7 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   //reset position 
   robot_x = 0;
   robot_y = 0;
+  lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
   yEncoder.reset();
 
@@ -53,15 +56,17 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
 {
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
+    int xDist = xEncoder.get_position() - lastEncoderPositionX;
     int yDist = yEncoder.get_position() - lastEncoderPositionY;
 
+    lastEncoderPositionX = xEncoder.get_position();
     lastEncoderPositionY = yEncoder.get_position();
 
     //change x and y location of the robot based off of the rotation of the robot
     double rot = gyro.get_rotation();
 
-    robot_x += sin(rot*PI/180) * yDist;
-    robot_y += cos(rot*PI/180) * yDist;
+    robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
+    robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
 
     pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
