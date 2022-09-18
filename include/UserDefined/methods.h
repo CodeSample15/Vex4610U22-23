@@ -12,7 +12,7 @@
 #include "UserDefined/pid.h"
 
 //location of the goal (TBD)
-Points target_pos(0,0);
+extern Points target_pos;
 
 //PID objects
 extern PID turnPid;

@@ -12,15 +12,15 @@ void display()
 	lcd::initialize();
 
 	while(true) {
-		lcd::set_text(1, "X Position: " + std::to_string(robot_x));
-		lcd::set_text(2, "Y Position: " + std::to_string(robot_y));
-		lcd::set_text(3, "Rotation: " + std::to_string(gyro.get_rotation()));
-		lcd::set_text(4, "Right front temp: " + std::to_string(RightFront.get_temperature()));
-		lcd::set_text(5, "Right back temp: " + std::to_string(RightBack.get_temperature()));
-		lcd::set_text(6, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
-		lcd::set_text(7, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
+		lcd::set_text(0, "X Position: " + std::to_string(robot_x));
+		lcd::set_text(1, "Y Position: " + std::to_string(robot_y));
+		lcd::set_text(2, "Rotation: " + std::to_string(gyro.get_rotation()));
+		lcd::set_text(3, "Right front temp: " + std::to_string(RightFront.get_temperature()));
+		lcd::set_text(4, "Right back temp: " + std::to_string(RightBack.get_temperature()));
+		lcd::set_text(5, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
+		lcd::set_text(6, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
 
-		delay(20);
+		pros::delay(20);
 
 		lcd::clear();
 	}
@@ -51,15 +51,17 @@ void opcontrol() {
 	int rightSpeed;
 	int leftSpeed;
 	double curvedTurn; //putting the turn on a curve
-	bool negative; //for after I square the value
+	bool negative; //for after the turn value is squared
 
 	RightFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	RightBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
+	int autoAimButton = E_CONTROLLER_DIGITAL_A;
+
 	while (true) {
-		if(!controller.get_digital(E_CONTROLLER_DIGITAL_A)) { //auto aim button (hold to activate)
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_A) == 0) { //auto aim button (hold to activate)
 			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
 			curvedTurn *= curvedTurn;
@@ -80,8 +82,12 @@ void opcontrol() {
 
 			//excecute turn as long as the turn button is pressed
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+
+			//wait until aim button is released to prevent jitter
+			while(controller.get_digital(E_CONTROLLER_DIGITAL_A) == 1)
+				pros::delay(10);
 		}
 
-		delay(20);
+		pros::delay(20);
 	}
 }
