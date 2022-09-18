@@ -3,8 +3,10 @@
 #include "robot.h"
 #include <cmath>
 
+Points target_pos = Points(0,0);
+
 //initializing the pid objects with their respective tunes
-PID turnPid(0.55, 0.005, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
+PID turnPid(0.55, 0, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
 PID movePid(0.09, 0.00, 0.07, 15);
 
 bool stopThreads;
@@ -24,6 +26,9 @@ void init()
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
 
+  xEncoder.reset();
+  yEncoder.reset();
+
   stopThreads = true;
 
   RightFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
@@ -32,8 +37,11 @@ void init()
   LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
   //calibrate imu
+  gyro.reset();
+
   while(gyro.is_calibrating())
-    pros::delay(10);
+    pros::delay(50);
+  pros::delay(1000); //give the IMU an extra second
 
   //starting position tracking thread once everything is initialized
   pros::Task t(update_pos);
@@ -47,17 +55,26 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
   yEncoder.reset();
-
-  //reset IMU
-  gyro.reset();
 }
 
 void update_pos() //this should ALWAYS be running to keep track of the robot's position
 {
+  //ensure that everything was reset
+  robot_x = 0;
+  robot_y = 0;
+  lastEncoderPositionX = 0;
+  lastEncoderPositionY = 0;
+
+  xEncoder.set_position(0);
+  yEncoder.set_position(0);
+
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
     int xDist = xEncoder.get_position() - lastEncoderPositionX;
     int yDist = yEncoder.get_position() - lastEncoderPositionY;
+
+    xDist /= 10; //because the values that come out of this are too high
+    yDist /= 10;
 
     lastEncoderPositionX = xEncoder.get_position();
     lastEncoderPositionY = yEncoder.get_position();
@@ -68,7 +85,7 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
     robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
 
-    pros::delay(20); //change this value to update the frequency that the position of the robot is updated
+    pros::delay(10); //change this value to update the frequency that the position of the robot is updated
   }
 }
 
