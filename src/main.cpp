@@ -58,10 +58,12 @@ void opcontrol() {
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	int autoAimButton = E_CONTROLLER_DIGITAL_A;
-
 	while (true) {
-		if(controller.get_digital(E_CONTROLLER_DIGITAL_A) == 0) { //auto aim button (hold to activate)
+
+		//auto aim button (hold to activate)
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_A) == 0) {
+			//regular drive code
+
 			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
 			curvedTurn *= curvedTurn;
@@ -82,10 +84,6 @@ void opcontrol() {
 
 			//excecute turn as long as the turn button is pressed
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
-
-			//wait until aim button is released to prevent jitter
-			while(controller.get_digital(E_CONTROLLER_DIGITAL_A) == 1)
-				pros::delay(10);
 		}
 
 		pros::delay(20);
