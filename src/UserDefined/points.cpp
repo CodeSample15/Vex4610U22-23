@@ -1,5 +1,6 @@
 #include "UserDefined/points.h"
 #include "UserDefined/methods.h"
+#include <iostream>
 #include <cmath>
 
 Points::Points()
@@ -39,15 +40,18 @@ double Points::distanceTo(Points& other) {
 }
 
 
-int Points::angleTo(double x, double y) {
+float Points::angleTo(double x, double y) {
   Points robot_pos = getPositionXY();
 
   double dx = x - robot_pos.x;
   double dy = y - robot_pos.y;
+  std::cout << "X: " << x << "   Y: " << y << "   DX: " << dx << "   DY: " << dy << std::endl;
 
-  return (int)atan(dx/dy);
+  std::cout << 90 - atan(dy/dx) << std::endl;
+  int degree = (180 * atan(dy/dx)) / PI;
+  return 90 - degree;
 }
 
-int Points::angleTo(Points& other) {
+float Points::angleTo(Points& other) {
   return Points::angleTo(other.x, other.y);
 }

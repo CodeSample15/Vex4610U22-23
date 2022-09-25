@@ -27,6 +27,8 @@ extern int lastEncoderPositionY;
 
 extern bool stopThreads;
 
+extern double maxSpeed;
+
 //functions used by the main file
 void init(); //set variable values and stuff
 void reset(); //resets rotation, odometers, variables, etc

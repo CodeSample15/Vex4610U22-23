@@ -1,13 +1,13 @@
 #include "api.h"
 
-#define RIGHT_FRONT_PORT 9
-#define RIGHT_BACK_PORT 14
-#define LEFT_FRONT_PORT 8
-#define LEFT_BACK_PORT 12
+#define RIGHT_FRONT_PORT 11
+#define RIGHT_BACK_PORT 5
+#define LEFT_FRONT_PORT 2
+#define LEFT_BACK_PORT 14
 
-#define GYRO_PORT 3
+#define GYRO_PORT 19
 
-#define X_ENCODER_PORT 19
+#define X_ENCODER_PORT 4
 #define Y_ENCODER_PORT 20
 
 

@@ -17,6 +17,7 @@ int robot_y;
 int lastEncoderPositionX;
 int lastEncoderPositionY;
 
+double maxSpeed = 0;
 
 void init()
 {
@@ -54,6 +55,7 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   robot_y = 0;
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
+  xEncoder.reset();
   yEncoder.reset();
 }
 
@@ -70,22 +72,22 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
 
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
-    int xDist = xEncoder.get_position() - lastEncoderPositionX;
-    int yDist = yEncoder.get_position() - lastEncoderPositionY;
+    int xDist = lastEncoderPositionX - xEncoder.get_position();
+    int yDist = lastEncoderPositionY - yEncoder.get_position();
 
-    xDist /= 10; //because the values that come out of this are too high
-    yDist /= 10;
+    xDist /= 20; //because the values that come out of this are too high
+    yDist /= 20;
 
     lastEncoderPositionX = xEncoder.get_position();
     lastEncoderPositionY = yEncoder.get_position();
 
     //change x and y location of the robot based off of the rotation of the robot
-    double rot = gyro.get_rotation();
+    int rot = (int)gyro.get_rotation();
 
     robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
     robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
 
-    pros::delay(10); //change this value to update the frequency that the position of the robot is updated
+    pros::delay(60); //change this value to update the frequency that the position of the robot is updated
   }
 }
 
@@ -178,7 +180,7 @@ void Turn(PID& turnPid, int amount, double speed)
   int startRot = gyro.get_rotation();
 
   do {
-    speed = turnPid.calculate(gyro.get_rotation(), amount - startRot) * speed;
+    speed = turnPid.calculate(gyro.get_rotation(), gyro.get_rotation() + (amount - startRot)) * speed;
 
     RightFront.move(-speed);
     RightBack.move(-speed);
@@ -196,7 +198,7 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
   int startRot = gyro.get_rotation();
 
   do {
-    speed = turnPid.calculate(gyro.get_rotation(), amount - startRot) * speed;
+    speed = turnPid.calculate(gyro.get_rotation(), gyro.get_rotation() + (amount - startRot)) * speed;
 
     RightFront.move(-speed);
     RightBack.move(-speed);
@@ -232,7 +234,7 @@ void TurnToRotation(PID& turnPid, int degree, double speed)
 
 void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()) 
 {
-  //get local rotation 
+  //get local rotation
   int times = (int)(gyro.get_rotation() / 360);
   int local_rot = gyro.get_rotation() - (360 * times); 
 
