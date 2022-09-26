@@ -16,6 +16,6 @@ class Points
     double distanceTo(double x, double y); //pretty self-explanatory
     double distanceTo(Points& other);
 
-    float angleTo(double x, double y); //for determining what angle the robot needs to turn to in order to point towards a specific point
-    float angleTo(Points& other);
+    double angleTo(double x, double y); //for determining what angle the robot needs to turn to in order to point towards a specific point
+    double angleTo(Points& other);
 };

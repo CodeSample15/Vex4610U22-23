@@ -40,18 +40,24 @@ double Points::distanceTo(Points& other) {
 }
 
 
-float Points::angleTo(double x, double y) {
-  Points robot_pos = getPositionXY();
+double Points::angleTo(double x, double y) {
+  double dx = x - Points::x;
+  double dy = y - Points::y;
 
-  double dx = x - robot_pos.x;
-  double dy = y - robot_pos.y;
-  std::cout << "X: " << x << "   Y: " << y << "   DX: " << dx << "   DY: " << dy << std::endl;
+  double degree = (180 * atan(dy/dx)) / PI;
+  std::cout << degree << std::endl;
 
-  std::cout << 90 - atan(dy/dx) << std::endl;
-  int degree = (180 * atan(dy/dx)) / PI;
-  return 90 - degree;
+  //figure out what quadrant the degree is in and add numbers accordingly
+  if(dx > 0 && dy > 0) 
+    return 90 - degree;    //degree is positive
+  else if(dx < 0 && dy > 0)
+    return -(90 + degree); //degree will be negative
+  else if(dx < 0 && dy < 0)
+    return degree - 90;    //degree is negative
+  else
+    return degree + 90;    //degree is positive
 }
 
-float Points::angleTo(Points& other) {
+double Points::angleTo(Points& other) {
   return Points::angleTo(other.x, other.y);
 }
