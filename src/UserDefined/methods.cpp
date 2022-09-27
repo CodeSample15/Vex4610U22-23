@@ -2,6 +2,7 @@
 #include "api.h"
 #include "robot.h"
 #include <cmath>
+#include <iostream>
 
 Points target_pos = Points(0,0);
 
@@ -236,7 +237,8 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
 {
   //get local rotation
   int times = (int)(gyro.get_rotation() / 360);
-  int local_rot = gyro.get_rotation() - (360 * times); 
+  int local_rot = gyro.get_rotation() - (360 * times);
+  std::cout << "Local rotation: " << local_rot << std::endl;
 
   //determine quickest way to turn to that rotation
   int rotate_left = degree - local_rot;

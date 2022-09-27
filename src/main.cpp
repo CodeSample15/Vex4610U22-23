@@ -100,7 +100,7 @@ void opcontrol() {
 			int targetRot = pos.angleTo(target_pos);
 
 			//excecute turn as long as the turn button is pressed
-			std::cout << "Turning to rotation" << std::endl;
+			std::cout << "Turning to rotation: ";
 			std::cout << std::to_string(targetRot) << std::endl;
 
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
