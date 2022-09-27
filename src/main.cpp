@@ -1,7 +1,7 @@
 /*
 	Current problems:
+		- Position tracking with inertial is too drifty. Switch to complete tracking with rotation sensors ASAP
 		- Jitter still exists for auto aiming
-		- Points class doesn't correctly calculate angleTo another point
 		- X-axis wheel is spinning when turning (might be an issue, should be tested more)
 		- Turning is on too much of a curve (dampen? put on a lesser curve?)
 		- Still no way to tell gyro is calibrating (save for last)

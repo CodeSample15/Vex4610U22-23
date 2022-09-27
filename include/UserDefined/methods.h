@@ -34,6 +34,7 @@ void init(); //set variable values and stuff
 void reset(); //resets rotation, odometers, variables, etc
 void update_pos(); //update position based off of how fast the wheels of the robot are turning (will run in separate thread)
 Points getPositionXY(); //returns the robots current position
+double getRotation(); //returns the local rotation of the robot
 
 //movement functions
 void hardDriveStop();

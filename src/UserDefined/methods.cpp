@@ -97,6 +97,13 @@ Points getPositionXY()
   return Points((double)robot_x, (double)robot_y);
 }
 
+double getRotation() 
+{
+  double curRotation = gyro.get_rotation();
+
+  
+}
+
 
 //movement stuff (all of the drivetrain stuff will run with motor.move)
 void hardDriveStop() 
