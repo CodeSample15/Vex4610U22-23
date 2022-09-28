@@ -88,11 +88,6 @@ void opcontrol() {
 			RightBack.move(rightSpeed);
 			LeftFront.move(leftSpeed);
 			LeftBack.move(leftSpeed);
-
-			double speed = RightFront.get_actual_velocity() * 2 * 3.1415926 * 1.625;
-			if(abs(speed) > abs(maxSpeed)) {
-				maxSpeed = speed;
-			}
 		}
 		else {
 			//calculate angle to the goal x y point (hardcoded)
