@@ -1,9 +1,9 @@
 /*
 	Current problems:
-		- Position tracking with inertial is too drifty. Switch to complete tracking with rotation sensors ASAP
-		- Jitter still exists for auto aiming
-		- X-axis wheel is spinning when turning (might be an issue, should be tested more)
-		- Turning is on too much of a curve (dampen? put on a lesser curve?)
+		- Position tracking with inertial is too drifty. Switch to complete tracking with rotation sensors ASAP		(will be fixed)
+		- Jitter still exists for auto aiming 																		(fixed)
+		- X-axis wheel is spinning when turning (might be an issue, should be tested more)							(to be tested next class)
+		- Turning is on too much of a curve (dampen? put on a lesser curve?)										(fixed)
 		- Still no way to tell gyro is calibrating (save for last)
 */
 
@@ -78,8 +78,8 @@ void opcontrol() {
 
 			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
-			curvedTurn *= curvedTurn;
-			curvedTurn *= 127 * (negative ? -1 : 1); //returning the output value to the desired range
+			curvedTurn *= curvedTurn * curvedTurn; //curvedTurn^3
+			curvedTurn *= 127 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
 
 			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn;
 			leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn;
