@@ -101,7 +101,15 @@ double getRotation()
 {
   double curRotation = gyro.get_rotation();
 
-  
+  //mapping the rotation between -360 and 360
+  int times = (int)(curRotation / 360);
+  curRotation = curRotation - (360 * times);
+
+  //mapping the next value between 0 and 360
+  if(curRotation < 0)
+    curRotation += 360;
+
+  return curRotation;
 }
 
 
@@ -243,21 +251,20 @@ void TurnToRotation(PID& turnPid, int degree, double speed)
 void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()) 
 {
   //get local rotation
-  int times = (int)(gyro.get_rotation() / 360);
-  int local_rot = gyro.get_rotation() - (360 * times);
-  std::cout << "Local rotation: " << local_rot << std::endl;
+  double curRot = getRotation();
 
   //determine quickest way to turn to that rotation
-  int rotate_left = degree - local_rot;
-  int rotate_right = local_rot - degree;
-  int rotate = 0;
-
-  //take the least distance to travel
-  if(abs(rotate_left) < abs(rotate_right))
-    rotate = rotate_left;
-  else
-    rotate = rotate_right;
+  double distOne = degree - curRot;
+  double distTwo = curRot - (360 + degree);
+  double distThree = (corRot)
 
   //excecute turn
-  Turn(turnPid, rotate, speed, active);
+  if(abs(distOne) < abs(distTwo)) {
+    std::cout << "Turn one was faster" << std::endl;
+    Turn(turnPid, rotate, speed, active);
+  }
+  else {
+    std::cout << "Turn two was faster" << std::endl;
+    Turn(turnPid, rotate, speed, active);
+  }
 }
