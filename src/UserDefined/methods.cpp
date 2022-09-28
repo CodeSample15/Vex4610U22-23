@@ -229,23 +229,27 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
 
 void TurnToRotation(PID& turnPid, int degree, double speed) 
 {
-  //get local rotation 
-  int times = (int)(gyro.get_rotation() / 360);
-  int local_rot = gyro.get_rotation() - (360 * times); 
+  //get local rotation
+  double curRot = getRotation();
 
   //determine quickest way to turn to that rotation
-  int rotate_left = degree - local_rot;
-  int rotate_right = local_rot - degree;
-  int rotate = 0;
-
-  //take the least distance to travel
-  if(abs(rotate_left) < abs(rotate_right))
-    rotate = rotate_left;
-  else
-    rotate = rotate_right;
+  double distOne = degree - curRot;
+  double distTwo = (degree + 360) - curRot;
+  double distThree = (curRot + 360) - degree;
 
   //excecute turn
-  Turn(turnPid, rotate, speed);
+  if(abs(distOne) < abs(distTwo) && abs(distOne) < abs(distThree)) {
+    std::cout << "Turn one was faster" << std::endl;
+    Turn(turnPid, degree - curRot, speed);
+  }
+  else if(abs(distTwo) < abs(distThree)) {
+    std::cout << "Turn two was faster" << std::endl;
+    Turn(turnPid, (degree + 360) - curRot, speed);
+  }
+  else {
+    std::cout << "Turn three was faster" << std::endl;
+    Turn(turnPid, (curRot + 360) - degree, speed);
+  }
 }
 
 void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()) 
@@ -255,16 +259,20 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
 
   //determine quickest way to turn to that rotation
   double distOne = degree - curRot;
-  double distTwo = curRot - (360 + degree);
-  double distThree = (corRot)
+  double distTwo = (degree + 360) - curRot;
+  double distThree = (curRot + 360) - degree;
 
   //excecute turn
-  if(abs(distOne) < abs(distTwo)) {
+  if(abs(distOne) < abs(distTwo) && abs(distOne) < abs(distThree)) {
     std::cout << "Turn one was faster" << std::endl;
-    Turn(turnPid, rotate, speed, active);
+    Turn(turnPid, degree - curRot, speed, active);
+  }
+  else if(abs(distTwo) < abs(distThree)) {
+    std::cout << "Turn two was faster" << std::endl;
+    Turn(turnPid, (degree + 360) - curRot, speed, active);
   }
   else {
-    std::cout << "Turn two was faster" << std::endl;
-    Turn(turnPid, rotate, speed, active);
+    std::cout << "Turn three was faster" << std::endl;
+    Turn(turnPid, (curRot + 360) - degree, speed, active);
   }
 }
