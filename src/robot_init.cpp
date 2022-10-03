@@ -10,7 +10,8 @@ pros::Motor LeftFront = pros::Motor(LEFT_FRONT_PORT, true);
 pros::Motor LeftBack = pros::Motor(LEFT_BACK_PORT, true);
 
 //sensors
-pros::Imu gyro = pros::Imu(GYRO_PORT);
+pros::Imu gyro = pros::Imu(INERTIAL1_PORT);
+pros::Imu gyro2 = pros::Imu(INERTIAL2_PORT);
 
 pros::Rotation xEncoder = pros::Rotation(X_ENCODER_PORT);
 pros::Rotation yEncoder = pros::Rotation(Y_ENCODER_PORT);

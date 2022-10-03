@@ -95,7 +95,7 @@ void opcontrol() {
 			std::cout << "Turning to rotation: ";
 			std::cout << std::to_string(targetRot) << std::endl;
 
-			TurnToRotation(turnPid, targetRot, 1); //[](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
 		pros::delay(20);

@@ -5,7 +5,8 @@
 #define LEFT_FRONT_PORT 2
 #define LEFT_BACK_PORT 14
 
-#define GYRO_PORT 6
+#define INERTIAL1_PORT 6
+#define INERTIAL2_PORT 3
 
 #define X_ENCODER_PORT 4
 #define Y_ENCODER_PORT 20
@@ -20,6 +21,7 @@ extern pros::Motor LeftFront;
 extern pros::Motor LeftBack;
 
 extern pros::Imu gyro;
+extern pros::Imu gyro2;
 
 extern pros::Rotation xEncoder;
 extern pros::Rotation yEncoder;

@@ -40,10 +40,12 @@ void init()
 
   //calibrate imu
   gyro.reset();
+  gyro2.reset();
 
-  while(gyro.is_calibrating())
+  while(gyro.is_calibrating() || gyro2.is_calibrating())
     pros::delay(50);
   gyro.tare();
+  gyro2.tare();
 
   pros::delay(1000); //give the IMU an extra second
 
@@ -213,10 +215,10 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
 
 void Turn(PID& turnPid, int amount, double speed) 
 {
-  int startRot = gyro.get_rotation();
+  gyro2.tare_rotation();
 
   do {
-    speed = turnPid.calculate(gyro.get_rotation(), gyro.get_rotation() + (amount - startRot)) * speed;
+    speed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
     std::cout << speed;
     RightFront.move(-speed);
     RightBack.move(-speed);
@@ -231,10 +233,10 @@ void Turn(PID& turnPid, int amount, double speed)
 
 void Turn(PID& turnPid, int amount, double speed, bool (*active)()) 
 {
-  int startRot = gyro.get_rotation();
+  gyro2.tare_rotation();
 
   do {
-    speed = turnPid.calculate(gyro.get_rotation(), gyro.get_rotation() + (amount - startRot)) * speed;
+    speed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
 
     RightFront.move(-speed);
     RightBack.move(-speed);
