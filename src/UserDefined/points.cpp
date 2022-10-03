@@ -44,18 +44,34 @@ double Points::angleTo(double x, double y) {
   double dx = x - Points::x;
   double dy = y - Points::y;
 
-  double degree = (180 * atan(dy/dx)) / PI;
-  std::cout << degree << std::endl;
+  double degree;
+  std::cout << "Dx: " << dx << "   Dy: " << dy << std::endl;
 
-  //figure out what quadrant the degree is in and add numbers accordingly
-  if(dx > 0 && dy > 0) 
-    return 90 - degree;    //degree is positive
-  else if(dx < 0 && dy > 0)
-    return -(90 + degree); //degree will be negative
-  else if(dx < 0 && dy < 0)
-    return degree - 90;    //degree is negative
-  else
-    return degree + 90;    //degree is positive
+  if (dx == 0) {
+    if (dy > 0)
+      degree = 0;
+    else
+      degree = 180;
+  } 
+  else if (dy == 0) {
+    if (dx > 0)
+      degree = 90;
+    else
+      degree = 90;
+  } 
+  else {
+    degree = ((180 * atan(dy/dx)) / PI);
+
+    if(degree > 0)
+      degree = 90 - degree;
+    else
+      degree += 90;
+
+    if (dy < 0)
+      degree += (degree < 0 ? 180 : -180);
+  }
+
+  return degree;
 }
 
 double Points::angleTo(Points& other) {

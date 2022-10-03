@@ -5,7 +5,7 @@
 #define LEFT_FRONT_PORT 2
 #define LEFT_BACK_PORT 14
 
-#define GYRO_PORT 19
+#define GYRO_PORT 6
 
 #define X_ENCODER_PORT 4
 #define Y_ENCODER_PORT 20

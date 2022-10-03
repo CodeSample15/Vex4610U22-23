@@ -7,13 +7,13 @@
 Points target_pos = Points(0,0);
 
 //initializing the pid objects with their respective tunes
-PID turnPid(0.55, 0, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
-PID movePid(0.09, 0.00, 0.07, 15);
+PID turnPid = PID(0.55, 0, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
+PID movePid = PID(0.09, 0.00, 0.07, 15);
 
 bool stopThreads;
 
-int robot_x;
-int robot_y;
+double robot_x;
+double robot_y;
 
 int lastEncoderPositionX;
 int lastEncoderPositionY;
@@ -43,6 +43,8 @@ void init()
 
   while(gyro.is_calibrating())
     pros::delay(50);
+  gyro.tare();
+
   pros::delay(1000); //give the IMU an extra second
 
   //starting position tracking thread once everything is initialized
@@ -51,7 +53,7 @@ void init()
 
 void reset() //shouldn't really be a need for this, but I'm putting this here just in case
 {
-  //reset position 
+  //reset position
   robot_x = 0;
   robot_y = 0;
   lastEncoderPositionX = 0;
@@ -73,22 +75,25 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
 
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
-    int xDist = lastEncoderPositionX - xEncoder.get_position();
-    int yDist = lastEncoderPositionY - yEncoder.get_position();
+    int xpos = xEncoder.get_position();
+    int ypos = yEncoder.get_position();
 
-    xDist /= 20; //because the values that come out of this are too high
-    yDist /= 20;
+    double xDist = lastEncoderPositionX - xpos;
+    double yDist = lastEncoderPositionY - ypos;
 
-    lastEncoderPositionX = xEncoder.get_position();
-    lastEncoderPositionY = yEncoder.get_position();
+    xDist /= 100; //because the values that come out of this are too high
+    yDist /= 100;
+
+    lastEncoderPositionX = xpos;
+    lastEncoderPositionY = ypos;
 
     //change x and y location of the robot based off of the rotation of the robot
-    int rot = (int)gyro.get_rotation();
+    double rot = getRegularRotation();
 
     robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
     robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
 
-    pros::delay(60); //change this value to update the frequency that the position of the robot is updated
+    pros::delay(10); //change this value to update the frequency that the position of the robot is updated
   }
 }
 
@@ -103,10 +108,25 @@ double getRotation()
 
   //mapping the rotation between -360 and 360
   int times = (int)(curRotation / 360);
-  curRotation = curRotation - (360 * times);
+  curRotation -= (360 * times);
 
   //mapping the next value between 0 and 360
   if(curRotation < 0)
+    curRotation += 360;
+
+  return curRotation;
+}
+
+double getRegularRotation()
+{
+  double curRotation = gyro.get_rotation();
+
+  int times = (int)(curRotation / 360);
+  curRotation -= (360 * times);
+
+  if(curRotation > 180)
+    curRotation -= 360;
+  else if(curRotation < -180)
     curRotation += 360;
 
   return curRotation;
@@ -197,7 +217,7 @@ void Turn(PID& turnPid, int amount, double speed)
 
   do {
     speed = turnPid.calculate(gyro.get_rotation(), gyro.get_rotation() + (amount - startRot)) * speed;
-
+    std::cout << speed;
     RightFront.move(-speed);
     RightBack.move(-speed);
     LeftFront.move(speed);

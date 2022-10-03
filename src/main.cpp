@@ -25,12 +25,9 @@ void display()
 		lcd::set_text(0, "X Position: " + std::to_string(robot_x));
 		lcd::set_text(1, "Y Position: " + std::to_string(robot_y));
 		lcd::set_text(2, "Rotation: " + std::to_string(gyro.get_rotation()));
-		lcd::set_text(3, "xOdom: " + std::to_string(xEncoder.get_position()));
-		lcd::set_text(3, "yOdom: " + std::to_string(yEncoder.get_position()));
-		//lcd::set_text(3, "Right front temp: " + std::to_string(RightFront.get_temperature()));
-		//lcd::set_text(4, "Right back temp: " + std::to_string(RightBack.get_temperature()));
-		lcd::set_text(5, "Left front temp: " + std::to_string(LeftFront.get_temperature()));
-		lcd::set_text(6, "Left back temp: " + std::to_string(LeftBack.get_temperature()));
+		lcd::set_text(3, "Local rotation " + std::to_string(getRegularRotation()));
+		lcd::set_text(4, "xOdom: " + std::to_string(xEncoder.get_position()));
+		lcd::set_text(5, "yOdom: " + std::to_string(yEncoder.get_position()));
 
 		pros::delay(20);
 
@@ -78,11 +75,11 @@ void opcontrol() {
 
 			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
-			curvedTurn *= curvedTurn * curvedTurn; //curvedTurn^3
+			curvedTurn *= curvedTurn; //curvedTurn^3
 			curvedTurn *= 127 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
 
-			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn;
-			leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn;
+			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn * 1.5;
+			leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn * 1.5;
 
 			RightFront.move(rightSpeed);
 			RightBack.move(rightSpeed);
@@ -98,7 +95,7 @@ void opcontrol() {
 			std::cout << "Turning to rotation: ";
 			std::cout << std::to_string(targetRot) << std::endl;
 
-			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+			TurnToRotation(turnPid, targetRot, 1); //[](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
 		pros::delay(20);

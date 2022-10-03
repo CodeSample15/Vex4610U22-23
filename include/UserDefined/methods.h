@@ -19,8 +19,8 @@ extern PID turnPid;
 extern PID movePid;
 
 //variables
-extern int robot_x;
-extern int robot_y;
+extern double robot_x;
+extern double robot_y;
 
 extern int lastEncoderPositionX;
 extern int lastEncoderPositionY;
@@ -35,6 +35,7 @@ void reset(); //resets rotation, odometers, variables, etc
 void update_pos(); //update position based off of how fast the wheels of the robot are turning (will run in separate thread)
 Points getPositionXY(); //returns the robots current position
 double getRotation(); //returns the local rotation of the robot
+double getRegularRotation(); //between -360 and 360
 
 //movement functions
 void hardDriveStop();
