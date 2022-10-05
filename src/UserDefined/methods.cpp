@@ -17,6 +17,9 @@ double robot_y;
 
 int lastEncoderPositionX;
 int lastEncoderPositionY;
+int lastRotationValue; //last value to be stored in the imu
+
+double yEncoderOffset;
 
 double maxSpeed = 0;
 
@@ -27,6 +30,9 @@ void init()
 
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
+  lastRotationValue = 0;
+
+  yEncoderOffset = 500;
 
   xEncoder.reset();
   yEncoder.reset();
@@ -60,6 +66,7 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   robot_y = 0;
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
+  lastRotationValue = 0;
   xEncoder.reset();
   yEncoder.reset();
 }
@@ -79,15 +86,19 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     //add on to the amount moved between delay times (PositionUpdateRate)
     int xpos = xEncoder.get_position();
     int ypos = yEncoder.get_position();
+    double curRotation = gyro.get_rotation();
+    double changeInRot = curRotation - lastRotationValue;
 
     double xDist = lastEncoderPositionX - xpos;
     double yDist = lastEncoderPositionY - ypos;
+    yDist += (changeInRot * yEncoderOffset * PI) / 180;
 
     xDist /= 1; //because the values that come out of this are too high
     yDist /= 1;
 
     lastEncoderPositionX = xpos;
     lastEncoderPositionY = ypos;
+    lastRotationValue = curRotation;
 
     //change x and y location of the robot based off of the rotation of the robot
     double rot = getRegularRotation();

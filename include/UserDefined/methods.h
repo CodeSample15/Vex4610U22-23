@@ -25,6 +25,8 @@ extern double robot_y;
 extern int lastEncoderPositionX;
 extern int lastEncoderPositionY;
 
+extern double yEncoderOffset;
+
 extern bool stopThreads;
 
 extern double maxSpeed;
