@@ -7,7 +7,7 @@
 Points target_pos = Points(0,0);
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(0.55, 0, 0.40, 15, 20, 3); //tunes are recycled from last year's robot
+PID turnPid = PID(1.5, 0.001, 0.1, 40, 20, 10);
 PID movePid = PID(0.09, 0.00, 0.07, 15);
 
 bool stopThreads;
@@ -83,8 +83,8 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     double xDist = lastEncoderPositionX - xpos;
     double yDist = lastEncoderPositionY - ypos;
 
-    xDist /= 100; //because the values that come out of this are too high
-    yDist /= 100;
+    xDist /= 1; //because the values that come out of this are too high
+    yDist /= 1;
 
     lastEncoderPositionX = xpos;
     lastEncoderPositionY = ypos;
@@ -95,7 +95,7 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
     robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
 
-    pros::delay(10); //change this value to update the frequency that the position of the robot is updated
+    pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
 }
 
@@ -138,14 +138,30 @@ double getRegularRotation()
 //movement stuff (all of the drivetrain stuff will run with motor.move)
 void hardDriveStop() 
 {
-  //may look pretty simple and unnecessary, but it plays a huge role of giving the bot enough time to fully slow down before continuing. Otherwise the bot may overshoot from not getting rid of all its momentum 
-  RightFront.brake();
-  RightBack.brake();
-  LeftFront.brake();
-  LeftBack.brake();
+  std::cout << "Breaking..." << std::endl;
 
-  while(abs(RightFront.get_actual_velocity()) > 1)
+  //may look pretty simple and unnecessary, but it plays a huge role of giving the bot enough time to fully slow down before continuing. Otherwise the bot may overshoot from not getting rid of all its momentum
+  RightFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	RightBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	LeftFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+	LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+
+  std::cout << RightFront.get_actual_velocity() << std::endl;
+  while(abs(RightFront.get_actual_velocity()) > 1) {
+    RightFront.brake();
+    RightBack.brake();
+    LeftFront.brake();
+    LeftBack.brake();
+
     pros::delay(10);
+  }
+
+  RightFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	RightBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	LeftFront.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
+  std::cout << "Done breaking" << std::endl;
 }
 
 
@@ -216,17 +232,16 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
 void Turn(PID& turnPid, int amount, double speed) 
 {
   gyro2.tare_rotation();
+  int turnSpeed = 0;
 
   do {
-    speed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
-    std::cout << speed;
-    RightFront.move(-speed);
-    RightBack.move(-speed);
-    LeftFront.move(speed);
-    LeftBack.move(speed);
+    turnSpeed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
 
-    pros::delay(10);
-  } while(abs((int)turnPid.error) > 3);
+    RightFront.move(-turnSpeed);
+    RightBack.move(-turnSpeed);
+    LeftFront.move(turnSpeed);
+    LeftBack.move(turnSpeed);
+  } while(abs((int)turnPid.error) > 5);
 
   hardDriveStop();
 }
@@ -234,17 +249,16 @@ void Turn(PID& turnPid, int amount, double speed)
 void Turn(PID& turnPid, int amount, double speed, bool (*active)()) 
 {
   gyro2.tare_rotation();
+  int turnSpeed = 0;
 
   do {
-    speed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
+    turnSpeed = turnPid.calculate(gyro2.get_rotation(), amount) * speed;
 
-    RightFront.move(-speed);
-    RightBack.move(-speed);
-    LeftFront.move(speed);
-    LeftBack.move(speed);
-
-    pros::delay(10);
-  } while(abs((int)turnPid.error) > 3 && active());
+    RightFront.move(-turnSpeed);
+    RightBack.move(-turnSpeed);
+    LeftFront.move(turnSpeed);
+    LeftBack.move(turnSpeed);
+  } while(abs((int)turnPid.error) > 5 && active());
 
   hardDriveStop();
 }

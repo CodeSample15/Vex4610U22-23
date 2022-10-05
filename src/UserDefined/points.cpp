@@ -49,18 +49,19 @@ double Points::angleTo(double x, double y) {
 
   if (dx == 0) {
     if (dy > 0)
-      degree = 0;
-    else
       degree = 180;
+    else
+      degree = 0;
   } 
   else if (dy == 0) {
     if (dx > 0)
       degree = 90;
     else
-      degree = 90;
+      degree = -90;
   } 
   else {
     degree = ((180 * atan(dy/dx)) / PI);
+
 
     if(degree > 0)
       degree = 90 - degree;
@@ -70,6 +71,13 @@ double Points::angleTo(double x, double y) {
     if (dy < 0)
       degree += (degree < 0 ? 180 : -180);
   }
+
+  if(dx > 0)
+    degree *= -1;
+  if(dy > 0 && dx > 0)
+    degree = 360 - degree;
+  else if(dy > 0 && dx > 0)
+    degree = 90 - degree;
 
   return degree;
 }

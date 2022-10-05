@@ -6,7 +6,7 @@
 #define LEFT_BACK_PORT 14
 
 #define INERTIAL1_PORT 6
-#define INERTIAL2_PORT 3
+#define INERTIAL2_PORT 9
 
 #define X_ENCODER_PORT 4
 #define Y_ENCODER_PORT 20

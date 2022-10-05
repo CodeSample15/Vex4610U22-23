@@ -25,9 +25,10 @@ void display()
 		lcd::set_text(0, "X Position: " + std::to_string(robot_x));
 		lcd::set_text(1, "Y Position: " + std::to_string(robot_y));
 		lcd::set_text(2, "Rotation: " + std::to_string(gyro.get_rotation()));
-		lcd::set_text(3, "Local rotation " + std::to_string(getRegularRotation()));
-		lcd::set_text(4, "xOdom: " + std::to_string(xEncoder.get_position()));
-		lcd::set_text(5, "yOdom: " + std::to_string(yEncoder.get_position()));
+		lcd::set_text(3, "Other rotation: " + std::to_string(gyro2.get_rotation()));
+		lcd::set_text(4, "Local rotation " + std::to_string(getRegularRotation()));
+		lcd::set_text(5, "xOdom: " + std::to_string(xEncoder.get_position()));
+		lcd::set_text(6, "yOdom: " + std::to_string(yEncoder.get_position()));
 
 		pros::delay(20);
 
@@ -35,9 +36,22 @@ void display()
 	}
 }
 
+void controller_display()
+{
+	controller.clear();
+
+	while(true) {
+		controller.set_text(0, 0, "X: " + std::to_string(robot_x));
+		controller.set_text(3, 1, "Y: " + std::to_string(robot_y));
+
+		pros::delay(60);
+	}
+}
+
 void initialize()
 {
 	Task d(display);
+	Task f(controller_display);
 	init(); //all the initialization will happen in the methods file
 }
 
