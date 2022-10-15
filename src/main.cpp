@@ -41,8 +41,7 @@ void controller_display()
 	controller.clear();
 
 	while(true) {
-		controller.set_text(0, 0, "X: " + std::to_string(robot_x));
-		controller.set_text(3, 1, "Y: " + std::to_string(robot_y));
+		controller.set_text(0, 0, "X: " + std::to_string((int)robot_x) + "  Y: " + std::to_string((int)robot_y));
 
 		pros::delay(60);
 	}

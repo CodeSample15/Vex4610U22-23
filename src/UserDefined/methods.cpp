@@ -4,10 +4,10 @@
 #include <cmath>
 #include <iostream>
 
-Points target_pos = Points(0,0);
+Points target_pos = Points(-1480, -4645);
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.5, 0.001, 0.1, 40, 20, 10);
+PID turnPid = PID(1.5, 0.001, 0.15, 40, 20, 10);
 PID movePid = PID(0.09, 0.00, 0.07, 15);
 
 bool stopThreads;
@@ -32,7 +32,7 @@ void init()
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
 
-  xEncoderOffset = 2135;
+  xEncoderOffset = 1700;
 
   xEncoder.reset();
   yEncoder.reset();
@@ -88,7 +88,7 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     int ypos = yEncoder.get_position();
     double curRotation = gyro.get_rotation();
     double changeInRot = curRotation - lastRotationValue;
-    if(changeInRot < 0.5)
+    if(abs(changeInRot) < 0.9)
       changeInRot = 0; //deadzone
 
     double xDist = lastEncoderPositionX - xpos;

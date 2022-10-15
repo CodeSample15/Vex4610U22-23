@@ -47,39 +47,8 @@ double Points::angleTo(double x, double y) {
   double degree;
   std::cout << "Dx: " << dx << "   Dy: " << dy << std::endl;
 
-  if (dx == 0) {
-    if (dy > 0)
-      degree = 180;
-    else
-      degree = 0;
-  } 
-  else if (dy == 0) {
-    if (dx > 0)
-      degree = 90;
-    else
-      degree = -90;
-  } 
-  else {
-    degree = ((180 * atan(dy/dx)) / PI);
-
-
-    if(degree > 0)
-      degree = 90 - degree;
-    else
-      degree += 90;
-
-    if (dy < 0)
-      degree += (degree < 0 ? 180 : -180);
-  }
-
-  if(dx > 0)
-    degree *= -1;
-  if(dy > 0 && dx > 0)
-    degree = 360 - degree;
-  else if(dy > 0 && dx > 0)
-    degree = 90 - degree;
-
-  return degree;
+  degree = ((180 * atan2(dy,dx)) / PI) + 90;
+  return -degree;
 }
 
 double Points::angleTo(Points& other) {
