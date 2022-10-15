@@ -29,8 +29,6 @@ extern double xEncoderOffset;
 
 extern bool stopThreads;
 
-extern double maxSpeed;
-
 //functions used by the main file
 void init(); //set variable values and stuff
 void reset(); //resets rotation, odometers, variables, etc
@@ -45,6 +43,7 @@ void Move(int amount, int speed, bool hardstop);
 void Move(PID& pid, int amount, double speed);
 void Move(PID& pid, PID& turnPID, int amount, double speed); //move function, but with rotation locking as well
 //void MoveUntilLine(int speed); (maybe)
+void MoveTo(PID& pid, PID& turnPid, int x, int y, double turnSpeed, double moveSpeed);
 
 void Turn(PID& turnPid, int amount, double speed);
 void Turn(PID& turnPid, int amount, double speed, bool (*active)()); //with a lambda to break out of the turn if a condition is met (for autonomous turning during driver control)

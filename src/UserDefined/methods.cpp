@@ -21,8 +21,6 @@ int lastRotationValue; //last value to be stored in the imu
 
 double xEncoderOffset;
 
-double maxSpeed = 0;
-
 void init()
 {
   robot_x = 0;
@@ -88,12 +86,12 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     int ypos = yEncoder.get_position();
     double curRotation = gyro.get_rotation();
     double changeInRot = curRotation - lastRotationValue;
-    if(abs(changeInRot) < 0.9)
-      changeInRot = 0; //deadzone
+    if(abs(changeInRot) < 0.8)
+      changeInRot = 0; //deadzone for IMU change
 
     double xDist = lastEncoderPositionX - xpos;
     double yDist = lastEncoderPositionY - ypos;
-    xDist += (changeInRot * xEncoderOffset * PI) / 180;
+    xDist += (changeInRot * xEncoderOffset * PI) / 180; //account for the offset of the x encoder
 
     xDist /= 100; //because the values that come out of this are too high
     yDist /= 100;
@@ -241,6 +239,15 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
   hardDriveStop();
 }
 
+void MoveTo(PID& pid, PID& turnPid, int x, int y, double turnSpeed, double moveSpeed) {
+  Points pos(robot_x, robot_y);
+  Points target(x, y);
+	int targetRot = pos.angleTo(target);
+  int distance = pos.distanceTo(target);
+
+  TurnToRotation(turnPid, targetRot, turnSpeed);
+  Move(pid, distance, moveSpeed);
+}
 
 void Turn(PID& turnPid, int amount, double speed) 
 {

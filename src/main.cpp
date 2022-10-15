@@ -1,9 +1,7 @@
 /*
 	Current problems:
-		- Position tracking with inertial is too drifty. Switch to complete tracking with rotation sensors ASAP		(will be fixed)
-		- Jitter still exists for auto aiming 																		(fixed)
-		- X-axis wheel is spinning when turning (might be an issue, should be tested more)							(to be tested next class)
-		- Turning is on too much of a curve (dampen? put on a lesser curve?)										(fixed)
+		- Auto aiming still isn't 100% accurate after being pushed by accident
+		- Auto aiming still needs a little bit of tweaking (save for final bot?)
 		- Still no way to tell gyro is calibrating (save for last)
 */
 
@@ -104,10 +102,7 @@ void opcontrol() {
 			Points pos(robot_x, robot_y);
 			int targetRot = pos.angleTo(target_pos);
 
-			//excecute turn as long as the turn button is pressed
-			std::cout << "Turning to rotation: ";
-			std::cout << std::to_string(targetRot) << std::endl;
-
+			//turn while button is still pressed
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
