@@ -86,7 +86,7 @@ void opcontrol() {
 
 			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
-			curvedTurn *= curvedTurn; //curvedTurn^3
+			curvedTurn = pow(curvedTurn, 2); //curvedTurn^2
 			curvedTurn *= 127 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
 
 			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn * 1.5;

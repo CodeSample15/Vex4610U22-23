@@ -102,9 +102,10 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
 
     //change x and y location of the robot based off of the rotation of the robot
     double rot = getRegularRotation();
+    double theta = rot*PI/180;
 
-    robot_x += (sin(rot*PI/180) * yDist) + (cos(rot*PI/180) * xDist);
-    robot_y += (cos(rot*PI/180) * yDist) + (sin(rot*PI/180) * xDist);
+    robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
+    robot_y += (cos(theta) * yDist) + (sin(theta) * xDist);
 
     pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
@@ -137,6 +138,7 @@ double getRegularRotation()
   int times = (int)(curRotation / 360);
   curRotation -= (360 * times);
 
+  //map number between -180 and 180
   if(curRotation > 180)
     curRotation -= 360;
   else if(curRotation < -180)
