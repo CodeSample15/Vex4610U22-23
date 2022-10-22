@@ -9,6 +9,8 @@
 #include <iostream>
 #include "UserDefined/methods.h"
 #include "UserDefined/points.h"
+#include "Screen/styles.hpp"
+#include "Screen/firstPage.hpp"
 #include "robot.h"
 #include "main.h"
 
@@ -18,6 +20,7 @@ void display()
 {
 	//thread to display important debug information
 	lcd::initialize();
+	std::cout << "Running display thread" << std::endl;
 
 	while(true) {
 		lcd::set_text(0, "X Position: " + std::to_string(robot_x));
@@ -47,8 +50,11 @@ void controller_display()
 
 void initialize()
 {
-	Task d(display);
+	//Task d(display);
 	Task f(controller_display);
+
+	init_styles();
+	firstPage();
 	init(); //all the initialization will happen in the methods file
 }
 
