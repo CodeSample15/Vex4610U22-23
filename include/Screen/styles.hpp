@@ -1,7 +1,8 @@
 #include "main.h"
 
-extern lv_style_t posButtonREL;
-extern lv_style_t posButtonPRES;
+extern lv_style_t posButtonREL, posButtonPRES;
+extern lv_style_t redButtonREL, redButtonPRES;
+extern lv_style_t blueButtonREL, blueButtonPRES;
 
 extern lv_style_t text_white_style, text_blue_style, text_red_style;
 
