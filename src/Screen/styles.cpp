@@ -4,6 +4,8 @@
 lv_style_t posButtonPRES;
 lv_style_t posButtonREL;
 
+lv_style_t text_white_style, text_blue_style, text_red_style;
+
 void init_styles() 
 {
     lv_style_copy(&posButtonREL, &lv_style_plain);
@@ -17,6 +19,15 @@ void init_styles()
     posButtonPRES.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
     posButtonPRES.body.radius = 0;
     posButtonPRES.text.color = LV_COLOR_MAKE(0, 0, 0);
+
+    lv_style_copy(&text_white_style, &lv_style_plain);
+    text_white_style.text.color = LV_COLOR_WHITE;
+
+    lv_style_copy(&text_blue_style, &lv_style_plain);
+    text_blue_style.text.color = LV_COLOR_BLUE;
+
+    lv_style_copy(&text_red_style, &lv_style_plain);
+    text_red_style.text.color = LV_COLOR_RED;
 }
 
 //helper methods for making UI
@@ -41,7 +52,11 @@ lv_obj_t * makeLabel(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t w
     lv_obj_t * label = lv_label_create(parent, NULL);
     lv_obj_set_pos(label, x, y);
     lv_obj_set_size(label, width, height);
-    lv_label_set_style(label, style);
+
+    if(style != nullptr)
+        lv_label_set_style(label, style);
+    else
+        lv_label_set_style(label, &text_white_style);
 
     return label;
 }
