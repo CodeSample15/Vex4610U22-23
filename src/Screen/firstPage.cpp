@@ -6,11 +6,23 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
 {
     uint8_t id = lv_obj_get_free_num(btn);
 
-    if(id == 0)
+    switch(id) 
     {
-        
+        case 0:
+            break;
+
+        case 1:
+            break;
+
+        case 2:
+            break;
+
+        case 3:
+            break;
+
+        case 4:
+            break;
     }
-    else if(id == 1)
 
     return LV_RES_OK;
 }
