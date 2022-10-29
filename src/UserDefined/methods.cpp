@@ -1,4 +1,5 @@
 #include "UserDefined/methods.h"
+#include "Screen/firstPage.hpp"
 #include "api.h"
 #include "robot.h"
 #include <cmath>
@@ -21,11 +22,10 @@ int lastRotationValue; //last value to be stored in the imu
 
 double xEncoderOffset;
 
+void set_pos();
+
 void init()
 {
-  robot_x = 0;
-  robot_y = 0;
-
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
@@ -51,7 +51,8 @@ void init()
   gyro.tare();
   gyro2.tare();
 
-  pros::delay(1000); //give the IMU an extra second
+  //set start position of the robot based off of what the user selected during auton selection
+  set_pos();
 
   //starting position tracking thread once everything is initialized
   pros::Task t(update_pos);
@@ -332,5 +333,41 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
   else {
     std::cout << "Turn three was faster" << std::endl;
     Turn(turnPid, (curRot + 360) - degree, speed, active);
+  }
+}
+
+void set_pos() 
+{
+  switch(start_pos)
+  {
+    case ONE:
+      robot_x = 0;
+      robot_y = 0;
+      gyro.set_rotation(0);
+      break;
+
+    case TWO:
+      robot_x = 0;
+      robot_y = 0;
+      gyro.set_rotation(0);
+      break;
+
+    case THREE:
+      robot_x = 0;
+      robot_y = 0;
+      gyro.set_rotation(0);
+      break;
+
+    case FOUR:
+      robot_x = 0;
+      robot_y = 0;
+      gyro.set_rotation(0);
+      break;
+
+    case FIVE:
+      robot_x = 0;
+      robot_y = 0;
+      gyro.set_rotation(0);
+      break;
   }
 }

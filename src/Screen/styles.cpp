@@ -75,9 +75,10 @@ lv_obj_t * makeButton(int id, lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_
     return btn;
 }
 
-lv_obj_t * makeLabel(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t width, lv_coord_t height, const char * title, lv_style_t * style)
+lv_obj_t * makeLabel(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t width, lv_coord_t height, const char * text, lv_style_t * style)
 {
     lv_obj_t * label = lv_label_create(parent, NULL);
+    lv_label_set_text(label, text);
     lv_obj_set_pos(label, x, y);
     lv_obj_set_size(label, width, height);
 

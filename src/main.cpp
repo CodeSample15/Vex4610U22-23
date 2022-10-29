@@ -54,7 +54,7 @@ void initialize()
 	Task f(controller_display);
 
 	init_styles();
-	firstPage();
+	firstPage(); //auton selection
 	init(); //all the initialization will happen in the methods file
 }
 
@@ -62,6 +62,7 @@ void disabled() {}
 
 void competition_initialize()
 {
+
 }
 
 void autonomous()
