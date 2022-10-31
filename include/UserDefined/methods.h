@@ -2,7 +2,7 @@
   * Author: Luke Crimi
   * Date created: 9/4/2022
   * Project: PositionTracking
-  * This will hold all of the functions and variables used by the main script
+  * This holds all of the functions and variables used by the main script
 */
 
 #pragma once
@@ -10,6 +10,10 @@
 
 #include "UserDefined/points.h"
 #include "UserDefined/pid.h"
+#include "UserDefined/AutonManager.h"
+
+//auton manager
+extern AutonManager a_manager;
 
 //location of the goal (TBD)
 extern Points target_pos;

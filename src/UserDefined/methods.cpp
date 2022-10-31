@@ -2,8 +2,11 @@
 #include "Screen/firstPage.hpp"
 #include "api.h"
 #include "robot.h"
+#include "autons.hpp"
 #include <cmath>
 #include <iostream>
+
+AutonManager a_manager = AutonManager();
 
 Points target_pos = Points(-1480, -4645);
 
@@ -22,10 +25,12 @@ int lastRotationValue; //last value to be stored in the imu
 
 double xEncoderOffset;
 
-void set_pos();
+void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void init()
 {
+  load_autons(a_manager);
+
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
