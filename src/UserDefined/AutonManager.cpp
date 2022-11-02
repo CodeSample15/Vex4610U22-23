@@ -13,11 +13,15 @@ AutonManager::AutonManager()
 
 void AutonManager::addAuton(void(*auton)(), std::string name, std::string desc, bool one, bool two, bool three, bool four, bool five)
 {
-    bool pos[5] = {one, two, three, four, five};
-
     AutonManager::names.push_back(name);
     AutonManager::descriptions.push_back(desc);
-    AutonManager::positions.push_back(pos);
+
+    AutonManager::positions.push_back(one);
+    AutonManager::positions.push_back(two);
+    AutonManager::positions.push_back(three);
+    AutonManager::positions.push_back(four);
+    AutonManager::positions.push_back(five);
+
     AutonManager::autons.push_back(auton);
 }
 
@@ -36,9 +40,10 @@ std::string AutonManager::getDescription(int autonNum)
     return AutonManager::descriptions.at(autonNum);
 }
 
-bool * AutonManager::getPositions(int autonNum)
+void AutonManager::getPositions(int autonNum, bool * p)
 {
-    return AutonManager::positions.at(autonNum);
+    for(int i=0; i<5; i++)
+        p[i] = AutonManager::positions.at((autonNum * 5)+i);
 }
 
 bool AutonManager::runAuton(int num)

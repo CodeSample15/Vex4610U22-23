@@ -33,6 +33,8 @@ extern double xEncoderOffset;
 
 extern bool stopThreads;
 
+extern int selectedAuton; //this is set by the auton selector gui
+
 //functions used by the main file
 void init(); //set variable values and stuff
 void reset(); //resets rotation, odometers, variables, etc

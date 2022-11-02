@@ -2,7 +2,6 @@
 	Current problems:
 		- Auto aiming still isn't 100% accurate after being pushed by accident
 		- Auto aiming still needs a little bit of tweaking (save for final bot?)
-		- Still no way to tell gyro is calibrating (save for last)
 */
 
 #include <string>
@@ -50,11 +49,9 @@ void controller_display()
 
 void initialize()
 {
-	//Task d(display);
+	//for testing driving
 	Task f(controller_display);
 
-	init_styles();
-	firstPage(); //auton selection
 	init(); //all the initialization will happen in the methods file
 }
 
@@ -62,12 +59,16 @@ void disabled() {}
 
 void competition_initialize()
 {
+	Task f(controller_display);
 
+	//only start 
+	init_styles();
+	firstPage(); //auton selection (calls the init function)
 }
 
 void autonomous()
 {
-
+	a_manager.runAuton(selectedAuton); //selectedAuton is from the methods.cpp file and is set inside of the autonSelectionPage.cpp file
 }
 
 void opcontrol() {

@@ -25,6 +25,8 @@ int lastRotationValue; //last value to be stored in the imu
 
 double xEncoderOffset;
 
+int selectedAuton = 0;
+
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void init()

@@ -13,13 +13,13 @@ class AutonManager
 
         std::string getName(int autonNum);
         std::string getDescription(int autonNum);
-        bool * getPositions(int autonNum);
+        void getPositions(int autonNum, bool * p);
 
         bool runAuton(int num);
 
     private:
         std::vector<std::string> names;
         std::vector<std::string> descriptions;
-        std::vector<bool*> positions;
+        std::vector<bool> positions;
         std::vector<void(*)()> autons;
 };

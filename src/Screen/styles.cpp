@@ -4,6 +4,7 @@
 lv_style_t posButtonPRES, posButtonREL;
 lv_style_t redButtonREL, redButtonPRES;
 lv_style_t blueButtonREL, blueButtonPRES;
+lv_style_t whiteButtonREL, whiteButtonPRES;
 
 lv_style_t text_white_style, text_blue_style, text_red_style;
 
@@ -24,27 +25,43 @@ void init_styles()
 
 
     lv_style_copy(&redButtonPRES, &lv_style_plain);
-    redButtonPRES.body.main_color = LV_COLOR_MAKE(255, 0, 0);
-    redButtonPRES.body.radius = 0.1;
-    redButtonPRES.text.color = LV_COLOR_BLACK;
+    redButtonPRES.body.main_color = LV_COLOR_MAKE(155, 0, 0);
+    redButtonPRES.body.grad_color = LV_COLOR_MAKE(155, 0, 0);
+    redButtonPRES.body.radius = 20;
+    redButtonPRES.text.color = LV_COLOR_WHITE;
 
     lv_style_copy(&redButtonREL, &lv_style_plain);
-    redButtonPRES.body.main_color = LV_COLOR_MAKE(155, 0, 0);
-    redButtonPRES.body.grad_color = LV_COLOR_MAKE(0, 0, 0);
-    redButtonPRES.body.radius = 0.1;
-    redButtonPRES.text.color = LV_COLOR_BLACK;
+    redButtonREL.body.main_color = LV_COLOR_MAKE(255, 0, 0);
+    redButtonREL.body.grad_color = LV_COLOR_MAKE(255, 0, 0);
+    redButtonREL.body.radius = 20;
+    redButtonREL.text.color = LV_COLOR_WHITE;
 
 
 
     lv_style_copy(&blueButtonPRES, &lv_style_plain);
-    blueButtonPRES.body.main_color = LV_COLOR_MAKE(0, 0, 255);
-    blueButtonPRES.body.radius = 0.1;
+    blueButtonPRES.body.main_color = LV_COLOR_MAKE(0, 0, 155);
+    blueButtonPRES.body.grad_color = LV_COLOR_MAKE(0, 0, 155);
+    blueButtonPRES.body.radius = 20;
+    blueButtonPRES.text.color = LV_COLOR_WHITE;
+
+    lv_style_copy(&blueButtonREL, &lv_style_plain);
+    blueButtonREL.body.main_color = LV_COLOR_MAKE(0, 0, 255);
+    blueButtonREL.body.grad_color = LV_COLOR_MAKE(0, 0, 255);
+    blueButtonREL.body.radius = 20;
+    blueButtonREL.text.color = LV_COLOR_WHITE;
+
+
+
+    lv_style_copy(&blueButtonPRES, &lv_style_plain);
+    blueButtonPRES.body.main_color = LV_COLOR_MAKE(155, 155, 155);
+    blueButtonPRES.body.grad_color = LV_COLOR_MAKE(155, 155, 155);
+    blueButtonPRES.body.radius = 20;
     blueButtonPRES.text.color = LV_COLOR_BLACK;
 
     lv_style_copy(&blueButtonREL, &lv_style_plain);
-    blueButtonREL.body.main_color = LV_COLOR_MAKE(0, 0, 155);
-    blueButtonREL.body.grad_color = LV_COLOR_MAKE(0, 0, 0);
-    blueButtonREL.body.radius = 0.1;
+    blueButtonREL.body.main_color = LV_COLOR_MAKE(255, 255, 255);
+    blueButtonREL.body.grad_color = LV_COLOR_MAKE(255, 255, 255);
+    blueButtonREL.body.radius = 20;
     blueButtonREL.text.color = LV_COLOR_BLACK;
 
 
