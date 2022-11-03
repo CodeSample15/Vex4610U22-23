@@ -1,12 +1,13 @@
 #include "main.h"
-#include "UserDefined/methods.h"
-#include "Screen/autonSelectionPage.hpp"
+#include "UserDefined/methods.h" //for the init() function
+#include "autonSelectionPage.hpp"
 #include "firstPage.hpp"
-#include "Screen/styles.hpp"
-#include <string>
-#include <iostream>
+#include "styles.hpp"
+#include "done.hpp"
 
-int curSelected = -1;
+#include <string>
+
+int selectedAuton = -1;
 
 static lv_res_t btn_click_action(lv_obj_t * btn) 
 {
@@ -15,11 +16,13 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
     if(id == -4)
         firstPage();
     else if(id == -5) {
-        selectedAuton = curSelected;
+        selectedAuton = selectedAuton;
+        
+        pros::Task e(doneScreen);
         init();
     }
     else {
-        curSelected = id;
+        selectedAuton = id;
         a_select(id);
     }
 

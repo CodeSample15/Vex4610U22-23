@@ -10,6 +10,8 @@
 #include "UserDefined/points.h"
 #include "Screen/styles.hpp"
 #include "Screen/firstPage.hpp"
+#include "Screen/autonSelectionPage.hpp"
+#include "Screen/done.hpp"
 #include "robot.h"
 #include "main.h"
 
@@ -49,8 +51,9 @@ void controller_display()
 
 void initialize()
 {
-	//for testing driving
+	//for driver testing
 	Task f(controller_display);
+	Task t(display);
 
 	init(); //all the initialization will happen in the methods file
 }
@@ -68,7 +71,16 @@ void competition_initialize()
 
 void autonomous()
 {
-	a_manager.runAuton(selectedAuton); //selectedAuton is from the methods.cpp file and is set inside of the autonSelectionPage.cpp file
+	if(selectedAuton != -1)
+	{
+		autonStarted = true;
+		runningAuton = true;
+		a_manager.runAuton(selectedAuton); //selectedAuton is from the autonSelectionPage files
+		runningAuton = false;
+	}
+	else {
+		std::cout << "Auton not selected! Not running anything" << std::endl;
+	}
 }
 
 void opcontrol() {

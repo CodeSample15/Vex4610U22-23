@@ -6,7 +6,7 @@ lv_style_t redButtonREL, redButtonPRES;
 lv_style_t blueButtonREL, blueButtonPRES;
 lv_style_t whiteButtonREL, whiteButtonPRES;
 
-lv_style_t text_white_style, text_blue_style, text_red_style;
+lv_style_t text_white_style, text_blue_style, text_red_style, text_green_style;
 
 void init_styles() 
 {
@@ -73,6 +73,9 @@ void init_styles()
 
     lv_style_copy(&text_red_style, &lv_style_plain);
     text_red_style.text.color = LV_COLOR_RED;
+
+    lv_style_copy(&text_green_style, &lv_style_plain);
+    text_green_style.text.color = LV_COLOR_GREEN;
 }
 
 //helper methods for making UI

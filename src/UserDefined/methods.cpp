@@ -25,13 +25,16 @@ int lastRotationValue; //last value to be stored in the imu
 
 double xEncoderOffset;
 
-int selectedAuton = 0;
+bool autonStarted;
+bool runningAuton;
 
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void init()
 {
   load_autons(a_manager);
+  autonStarted = false;
+  runningAuton = false;
 
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
@@ -124,7 +127,7 @@ Points getPositionXY()
   return Points((double)robot_x, (double)robot_y);
 }
 
-double getRotation() 
+double getRotation()
 {
   double curRotation = gyro.get_rotation();
 

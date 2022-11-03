@@ -8,9 +8,9 @@
 #pragma once
 #define PI 3.1415926
 
-#include "UserDefined/points.h"
-#include "UserDefined/pid.h"
-#include "UserDefined/AutonManager.h"
+#include "points.h"
+#include "pid.h"
+#include "AutonManager.h"
 
 //auton manager
 extern AutonManager a_manager;
@@ -32,8 +32,8 @@ extern int lastEncoderPositionY;
 extern double xEncoderOffset;
 
 extern bool stopThreads;
-
-extern int selectedAuton; //this is set by the auton selector gui
+extern bool autonStarted;
+extern bool runningAuton;
 
 //functions used by the main file
 void init(); //set variable values and stuff
