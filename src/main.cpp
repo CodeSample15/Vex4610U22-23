@@ -12,6 +12,7 @@
 #include "Screen/firstPage.hpp"
 #include "Screen/autonSelectionPage.hpp"
 #include "Screen/done.hpp"
+#include "autons.hpp"
 #include "robot.h"
 #include "main.h"
 
@@ -53,9 +54,13 @@ void initialize()
 {
 	//for driver testing
 	Task f(controller_display);
-	Task t(display);
+	//Task t(display);
 
-	init(); //all the initialization will happen in the methods file
+	load_autons(a_manager);
+	init_styles();
+	firstPage();
+
+	//init(); //all the initialization will happen in the methods file
 }
 
 void disabled() {}
@@ -64,7 +69,8 @@ void competition_initialize()
 {
 	Task f(controller_display);
 
-	//only start 
+	//only start first page gui during competition
+	load_autons(a_manager);
 	init_styles();
 	firstPage(); //auton selection (calls the init function)
 }

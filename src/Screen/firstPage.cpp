@@ -63,7 +63,7 @@ void firstPage()
     lv_obj_align(goalInd2, NULL, LV_ALIGN_IN_TOP_RIGHT, -25, 25);
 
     lv_obj_t * button1 = makeButton(0, lv_scr_act(), 10, 10, buttonWidth, buttonHeight, "Pos 1", &posButtonREL, &posButtonPRES);
-    lv_obj_t * button2 = makeButton(1, lv_scr_act(), 10, 70, buttonWidth, buttonHeight, "Pos 2", &posButtonREL, &posButtonPRES);
+    lv_obj_t * button2 = makeButton(1, lv_scr_act(), 10, 75, buttonWidth, buttonHeight, "Pos 2", &posButtonREL, &posButtonPRES);
     lv_obj_t * button3 = makeButton(2, lv_scr_act(), 10, 140, buttonWidth, buttonHeight, "Pos 3", &posButtonREL, &posButtonPRES);
     
     lv_obj_t * button4 = makeButton(3, lv_scr_act(), 120, 190, buttonWidth, buttonHeight, "Pos 4", &posButtonREL, &posButtonPRES);

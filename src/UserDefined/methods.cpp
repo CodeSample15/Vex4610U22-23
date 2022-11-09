@@ -2,7 +2,6 @@
 #include "Screen/firstPage.hpp"
 #include "api.h"
 #include "robot.h"
-#include "autons.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -32,7 +31,6 @@ void set_pos(); //definition at the bottom of this file (sets starting position 
 
 void init()
 {
-  load_autons(a_manager);
   autonStarted = false;
   runningAuton = false;
 
