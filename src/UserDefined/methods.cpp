@@ -50,6 +50,8 @@ void init()
   LeftFront.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
   LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
+  FlyWheel.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+
   //calibrate imu
   gyro.reset();
   gyro2.reset();
@@ -342,6 +344,22 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
     std::cout << "Turn three was faster" << std::endl;
     Turn(turnPid, (curRot + 360) - degree, speed, active);
   }
+}
+
+void spinPrep()
+{
+  FlyWheel.move_velocity(300); //move at 50% top RPM (600 in settings). Motor thinks it's going to 600, but it's actually going higher due to the lack of a gearbox
+}
+
+void spinUp()
+{
+  double dist = getPositionXY().distanceTo(target_pos);
+  FlyWheel.move_velocity(dist); //multiply by some constant (crude, I know, but kinematic equations get more complicated when air resistance is involved :( )
+}
+
+void spinDown()
+{
+  FlyWheel.brake(); //coasting brake mode
 }
 
 void set_pos() 

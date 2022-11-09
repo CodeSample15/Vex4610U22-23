@@ -5,6 +5,8 @@
 #define LEFT_FRONT_PORT 15
 #define LEFT_BACK_PORT 11
 
+#define FLYWHEEL_PORT 2
+
 #define INERTIAL1_PORT 7
 #define INERTIAL2_PORT 8
 
@@ -19,6 +21,8 @@ extern pros::Motor RightBack;
 
 extern pros::Motor LeftFront;
 extern pros::Motor LeftBack;
+
+extern pros::Motor FlyWheel;
 
 extern pros::Imu gyro;
 extern pros::Imu gyro2;

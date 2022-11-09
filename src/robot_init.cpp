@@ -1,4 +1,4 @@
-#include "api.h"
+#include "main.h"
 #include "robot.h"
 
 pros::Controller controller = pros::Controller(pros::E_CONTROLLER_MASTER);
@@ -8,6 +8,8 @@ pros::Motor RightBack = pros::Motor(RIGHT_BACK_PORT);
 
 pros::Motor LeftFront = pros::Motor(LEFT_FRONT_PORT, true);
 pros::Motor LeftBack = pros::Motor(LEFT_BACK_PORT, true);
+
+pros::Motor FlyWheel = pros::Motor(FLYWHEEL_PORT, pros::E_MOTOR_GEAR_600); //600 rpm cuz that's the highest and we don't have a gearbox
 
 //sensors
 pros::Imu gyro = pros::Imu(INERTIAL1_PORT);
