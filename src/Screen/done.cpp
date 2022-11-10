@@ -4,17 +4,14 @@
 #include "UserDefined/methods.h"
 #include "robot.h"
 
-lv_res_t to_done_screen(lv_obj_t * obj)
-{
-    doneScreen();
-    return LV_RES_OK;
-}
-
 void doneScreen() //thread that runs until completion of the auton
 {
     lv_obj_t * status;
 
     while(true) {
+        if(!runningAuton && autonStarted)
+            break;
+
         lv_obj_clean(lv_scr_act());
 
         if(autonStarted)
@@ -26,11 +23,8 @@ void doneScreen() //thread that runs until completion of the auton
         else
             status = makeLabel(lv_scr_act(), 0, 0, 100, 50, "Auton selected (Ready to go)", &text_white_style);
 
-        if(!runningAuton && autonStarted)
-            break;
-
         lv_obj_align(status, NULL, LV_ALIGN_CENTER, 0, 0);
 
-        pros::delay(10);
+        pros::delay(100);
     }
 }

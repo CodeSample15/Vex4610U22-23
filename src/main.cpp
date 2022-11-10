@@ -54,13 +54,9 @@ void initialize()
 {
 	//for driver testing
 	Task f(controller_display);
-	//Task t(display);
+	Task t(display);
 
-	load_autons(a_manager);
-	init_styles();
-	firstPage();
-
-	//init(); //all the initialization will happen in the methods file
+	init(); //all the initialization will happen in the methods file
 }
 
 void disabled() {}

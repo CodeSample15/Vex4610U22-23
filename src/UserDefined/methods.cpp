@@ -27,6 +27,8 @@ double xEncoderOffset;
 bool autonStarted;
 bool runningAuton;
 
+int flyWheelSpeed;
+
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void init()
@@ -39,6 +41,8 @@ void init()
   lastRotationValue = 0;
 
   xEncoderOffset = 1700;
+
+  flyWheelSpeed = 0;
 
   xEncoder.reset();
   yEncoder.reset();
@@ -348,18 +352,27 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
 
 void spinPrep()
 {
-  FlyWheel.move_velocity(300); //move at 50% top RPM (600 in settings). Motor thinks it's going to 600, but it's actually going higher due to the lack of a gearbox
+  FlyWheel.move_velocity(300); //spin up at 50% max RPM (600rpm is the max). Motor thinks it's going to 300rpm, but it's actually going higher due to the lack of a gearbox
 }
 
 void spinUp()
 {
   double dist = getPositionXY().distanceTo(target_pos);
-  FlyWheel.move_velocity(dist); //multiply by some constant (crude, I know, but kinematic equations get more complicated when air resistance is involved :( )
+  int speed = dist * 1; //multiply by some constant (crude, I know, but kinematic equations get complicated when air resistance is involved :( )
+
+  FlyWheel.move_velocity(speed);
+  flyWheelSpeed = speed;
 }
 
 void spinDown()
 {
   FlyWheel.brake(); //coasting brake mode
+  flyWheelSpeed = 0;
+}
+
+bool flyRecovering()
+{
+  return (FlyWheel.get_actual_velocity() < flyWheelSpeed-10);
 }
 
 void set_pos() 

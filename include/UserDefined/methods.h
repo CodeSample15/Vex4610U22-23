@@ -35,6 +35,8 @@ extern bool stopThreads;
 extern bool autonStarted;
 extern bool runningAuton;
 
+extern int flyWheelSpeed;
+
 //functions used by the main file
 void init(); //set variable values and stuff
 void reset(); //resets rotation, odometers, variables, etc
@@ -60,3 +62,5 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()); /
 void spinPrep(); //warm the motors by building momentum in the fly wheel (faster to get to full speed)
 void spinUp(); //set the flywheel's speed according to the robot's position 
 void spinDown(); //turn off the flywheel
+
+bool flyRecovering(); //if the flywheel is still recovering from the last fire
