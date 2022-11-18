@@ -128,6 +128,21 @@ void opcontrol() {
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
+		//driving the intake
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_L1) == 1)
+			IntakeOne.move(127);
+		else if(controller.get_digital(E_CONTROLLER_DIGITAL_L2) == 1)
+			IntakeOne.move(-127);
+		else
+			IntakeOne.brake();
+
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_R1) == 1)
+			IntakeTwo.move(127);
+		else if(controller.get_digital(E_CONTROLLER_DIGITAL_R2) == 1)
+			IntakeTwo.move(-127);
+		else
+			IntakeTwo.brake();
+
 		pros::delay(20);
 	}
 }
