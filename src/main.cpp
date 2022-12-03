@@ -2,12 +2,18 @@
 	Current problems:
 		- Auto aiming still isn't 100% accurate after being pushed by accident
 		- Auto aiming still needs a little bit of tweaking (save for final bot?)
+
+		- Position tracking preset start locations are still blank
+
+		- Flywheel auto spinup isn't tuned
+
 */
 
 #include <string>
 #include <iostream>
 #include "UserDefined/methods.h"
 #include "UserDefined/points.h"
+#include "UserDefined/Replay.h"
 #include "Screen/styles.hpp"
 #include "Screen/firstPage.hpp"
 #include "Screen/autonSelectionPage.hpp"
@@ -39,6 +45,18 @@ void display()
 	}
 }
 
+bool recording;
+void record()
+{
+	Replay replay;
+	recording = true;
+
+	while(recording)
+	{
+		replay.record();
+	}
+}
+
 void controller_display()
 {
 	controller.clear();
@@ -52,9 +70,12 @@ void controller_display()
 
 void initialize()
 {
+	Task x(record); //instant replay
+
 	//for driver testing
 	Task f(controller_display);
 	Task t(display);
+
 
 	init(); //all the initialization will happen in the methods file
 }
@@ -142,6 +163,12 @@ void opcontrol() {
 			IntakeTwo.move(-127);
 		else
 			IntakeTwo.brake();
+
+		//indexer
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
+			shoot(true);
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
+			indexerBack(); //change this in the future so that the indexing is less manual
 
 		pros::delay(20);
 	}

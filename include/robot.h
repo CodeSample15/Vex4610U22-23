@@ -16,6 +16,8 @@
 #define X_ENCODER_PORT 1
 #define Y_ENCODER_PORT 3
 
+#define INDEXER_PORT 9
+
 
 extern pros::Controller controller;
 
@@ -35,3 +37,5 @@ extern pros::Imu gyro2;
 
 extern pros::Rotation xEncoder;
 extern pros::Rotation yEncoder;
+
+extern pros::ADIDigitalOut Indexer;

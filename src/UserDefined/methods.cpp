@@ -33,6 +33,8 @@ void set_pos(); //definition at the bottom of this file (sets starting position 
 
 void init()
 {
+  indexerBack();
+
   autonStarted = false;
   runningAuton = false;
 
@@ -82,6 +84,8 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
   lastRotationValue = 0;
   xEncoder.reset();
   yEncoder.reset();
+
+  indexerBack();
 }
 
 void update_pos() //this should ALWAYS be running to keep track of the robot's position
@@ -372,8 +376,49 @@ void spinDown()
 
 bool flyRecovering()
 {
-  return (FlyWheel.get_actual_velocity() < flyWheelSpeed-10);
+  return (abs(FlyWheel.get_actual_velocity()) < abs(flyWheelSpeed)-10);
 }
+
+void indexerBack()
+{
+  Indexer.set_value(false);
+}
+
+void indexerForward() 
+{
+  Indexer.set_value(true);
+}
+
+
+void shoot(bool driving)
+{
+  if(driving) {
+
+    //for driving, warn the driver that the fly wheel isn't ready by rumbling
+    if(flyRecovering) {
+      controller.rumble("--");
+    }
+    else {
+      indexerForward();
+    }
+
+  }
+  else {
+
+    //for auton, wait until the flywheel has recovered before continuing
+    while(flyRecovering)
+      pros::delay(10);
+
+    indexerForward();
+    
+    while(flyRecovering)
+      pros::delay(10);
+
+    indexerBack();
+
+  }
+}
+
 
 void set_pos() 
 {

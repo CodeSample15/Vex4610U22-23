@@ -20,3 +20,5 @@ pros::Imu gyro2 = pros::Imu(INERTIAL2_PORT);
 
 pros::Rotation xEncoder = pros::Rotation(X_ENCODER_PORT);
 pros::Rotation yEncoder = pros::Rotation(Y_ENCODER_PORT);
+
+pros::ADIDigitalOut Indexer = pros::ADIDigitalOut(INDEXER_PORT);

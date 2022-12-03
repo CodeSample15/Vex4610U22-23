@@ -5,7 +5,7 @@
 void load_autons(AutonManager& manager);
 
 //add autons here
-void auton1()
+void test()
 {
     
 }
@@ -21,5 +21,5 @@ void load_autons(AutonManager& manager)
           4  5
     */
 
-    manager.addAuton(&auton1, "Test", "This is a test auton to make sure the selection menu works. Doesn't actually do anything.", true, false, false, true, false);
+    manager.addAuton(&test, "Test", "Test auton DO NOT RUN IN MATCHES", true, true, true, true, true);
 }
