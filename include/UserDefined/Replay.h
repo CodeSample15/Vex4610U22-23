@@ -14,9 +14,11 @@ class Replay
         ~Replay();
 
         void record();
+        void save();
     private:
         std::string fileName;
         int delay; //delay in milliseconds between each log
+        bool recording;
 
         FILE* usd_write_file;
 };
