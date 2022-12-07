@@ -11,7 +11,16 @@ WINDOW_HEIGHT = 600
 ROBOT_WIDTH = 40
 ROBOT_HEIGHT = 60
 
-DELAY = 50 #delay in milliseconds between screen updates
+#position offset so the robot image is aligned with the field
+CENTER_X = 300
+CENTER_Y = 500
+
+#how big the field is in the robot's units
+FIELD_WIDTH = 5090
+FIELD_HEIGHT = 5090
+
+#delay in milliseconds between screen updates
+DELAY = 50
 
 data = []
 #load data from robot
@@ -38,14 +47,6 @@ robot_img = np.zeros((2,2))
 with Image.open("Robot.png") as im:
     robot_img = np.array(im)
     robot_img = cv2.resize(robot_img, (ROBOT_WIDTH, ROBOT_HEIGHT), cv2.INTER_AREA)
-
-#position offset so the robot image is aligned with the field
-CENTER_X = 300
-CENTER_Y = 500
-
-#how big the field is in the robot's units
-FIELD_WIDTH = 5090
-FIELD_HEIGHT = 5090
 
 rob_x = 0
 rob_y = 0
