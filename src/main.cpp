@@ -48,7 +48,7 @@ void display()
 bool recording;
 void record()
 {
-	Replay replay;
+	Replay replay(50);
 	recording = true;
 
 	while(recording)

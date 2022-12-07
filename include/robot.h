@@ -8,13 +8,13 @@
 #define INTAKE_ONE_PORT 4
 #define INTAKE_TWO_PORT 5
 
-#define FLYWHEEL_PORT 2
+#define FLYWHEEL_PORT 3
 
-#define INERTIAL1_PORT 7
+#define INERTIAL1_PORT 10
 #define INERTIAL2_PORT 8
 
-#define X_ENCODER_PORT 1
-#define Y_ENCODER_PORT 3
+#define X_ENCODER_PORT 2
+#define Y_ENCODER_PORT 1
 
 #define INDEXER_PORT 9
 

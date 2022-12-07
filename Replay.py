@@ -4,17 +4,29 @@ from PIL import Image
 import numpy as np
 from time import sleep
 
+#size of the window and the background image in pixels
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 600
 
-DELAY = 100 #delay in milliseconds between screen updates
+#size of the robot image in pixels
+ROBOT_WIDTH = 40
+ROBOT_HEIGHT = 60
+
+DELAY = 50 #delay in milliseconds between screen updates
 
 data = []
 #load data from robot
 with open("replay.txt") as f:
     data = f.read().split(',')
 
-data = [int(data[i]) for i in range(len(data))]
+def tryToConvertToInt(value):
+    try:
+        return int(float(value))
+    except:
+        return 0
+
+data = [tryToConvertToInt(data[i]) for i in range(len(data))]
+data.pop(-1)
 
 #load images for GUI
 background = np.zeros((2,2))
@@ -26,22 +38,21 @@ with Image.open("Vex Field.png") as im:
 robot_img = np.zeros((2,2))
 with Image.open("Triangle.png") as im:
     robot_img = np.array(im)
-    robot_img = cv2.resize(robot_img, (70, 70), cv2.INTER_AREA)
+    robot_img = cv2.resize(robot_img, (ROBOT_WIDTH, ROBOT_HEIGHT), cv2.INTER_AREA)
 
 #position offset so the robot image is aligned with the field
-CENTER_X = 10
-CENTER_Y = 10
+CENTER_X = 300
+CENTER_Y = 500
 
 #how big the field is in the robot's units
-FIELD_WIDTH = 1000
-FIELD_HEIGHT = 1000
+FIELD_WIDTH = 5090
+FIELD_HEIGHT = 5090
 
 rob_x = 0
 rob_y = 0
 rob_rotation = 0
 
 counter = 0
-
 while True:
     if counter < len(data):
         #scaling the locations to fit on the field
@@ -50,16 +61,20 @@ while True:
         rob_rotation = int(data[counter+2])
     else:
         counter-=3 #keep the counter from increasing any further
+        print("Done")
 
     background_copy = background.copy()
     robot_img_copy = robot_img.copy()
 
-    robot_img_copy = imutils.rotate(robot_img_copy, 180 + rob_rotation)
+    robot_img_copy = imutils.rotate_bound(robot_img_copy, rob_rotation)
 
     for x in range(robot_img_copy.shape[0]):
         for y in range(robot_img_copy.shape[1]):
             if robot_img_copy[x, y, 3] != 0:
-                background_copy[x+rob_y+CENTER_Y, y+rob_x+CENTER_X] = robot_img_copy[x][y][0:3]
+                try:
+                    background_copy[x+rob_y+CENTER_Y, y-rob_x+CENTER_X] = robot_img_copy[x][y][0:3]
+                except IndexError:
+                    pass
 
     cv2.imshow('Replay', background_copy)
     key = cv2.waitKey(DELAY)
@@ -67,6 +82,7 @@ while True:
     if key == 27:
         break
 
+    #sleep(DELAY/1000)
     counter+=3
 
 
