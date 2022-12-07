@@ -15,22 +15,20 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
     uint8_t id = lv_obj_get_free_num(btn);
 
     selectedAuton = id;
-    a_select(id);
+    a_select(id); //reload the page
 
     return LV_RES_OK;
 }
 
 static lv_res_t lock_btn_action(lv_obj_t * btn)
-{
-    selectedAuton = selectedAuton;
-        
-    pros::Task e(doneScreen);
-    init();
+{  
+    pros::Task e(doneScreen); //start the doneScreen task
+    init(); //initialize the robot
 
     return LV_RES_OK;
 }
 
-lv_res_t to_a_select(lv_obj_t * obj) 
+lv_res_t to_a_select(lv_obj_t * obj)
 {
     a_select(-1);
     return LV_RES_OK;
