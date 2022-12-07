@@ -2,7 +2,6 @@ import cv2
 import imutils
 from PIL import Image
 import numpy as np
-from time import sleep
 
 #size of the window and the background image in pixels
 WINDOW_WIDTH = 600
@@ -82,7 +81,6 @@ while True:
     if key == 27:
         break
 
-    #sleep(DELAY/1000)
     counter+=3
 
 
