@@ -35,7 +35,7 @@ with Image.open("Vex Field.png") as im:
     background = cv2.cvtColor(background, cv2.COLOR_RGB2BGR)
 
 robot_img = np.zeros((2,2))
-with Image.open("Triangle.png") as im:
+with Image.open("Robot.png") as im:
     robot_img = np.array(im)
     robot_img = cv2.resize(robot_img, (ROBOT_WIDTH, ROBOT_HEIGHT), cv2.INTER_AREA)
 
