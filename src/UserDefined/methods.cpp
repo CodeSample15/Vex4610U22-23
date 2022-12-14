@@ -28,6 +28,7 @@ bool autonStarted;
 bool runningAuton;
 
 int flyWheelSpeed;
+int maxShootDistance; //how far the bot has to be from the goal before it can't score with max rpm
 
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
@@ -361,8 +362,9 @@ void spinPrep()
 
 void spinUp()
 {
-  double dist = getPositionXY().distanceTo(target_pos);
-  int speed = dist * 1; //multiply by some constant (crude, I know, but kinematic equations get complicated when air resistance is involved :( )
+  double dist = getPositionXY().distanceTo(target_pos) - 100; //TUNE THIS (Min distance)
+
+  int speed = ((dist/maxShootDistance)*100) + 500; //rpm should increase as distance increases TUNE THIS
 
   FlyWheel.move_velocity(speed);
   flyWheelSpeed = speed;
