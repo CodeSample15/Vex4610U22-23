@@ -28,6 +28,15 @@ static lv_res_t lock_btn_action(lv_obj_t * btn)
     return LV_RES_OK;
 }
 
+static lv_res_t set_team_color(lv_obj_t * btn) {
+    uint8_t id = lv_obj_get_free_num(btn);
+
+    TEAM_COLOR = (id==0 ? 'r' : 'b');
+    a_select(selectedAuton);
+
+    return LV_RES_OK;
+}
+
 lv_res_t to_a_select(lv_obj_t * obj)
 {
     a_select(-1);
@@ -39,7 +48,7 @@ void a_select(int selected)
     lv_obj_clean(lv_scr_act());
 
     //for the title of the page
-    std::string titleStr = "Showing autons for starting position ";
+    std::string titleStr = "Autons for pos ";
 
     switch(start_pos) 
     {
@@ -71,6 +80,10 @@ void a_select(int selected)
 
     //drawing the page itself
     lv_obj_t * title = makeLabel(lv_scr_act(), 0, 0, 100, 50, titleStr.c_str(), nullptr);
+    if(TEAM_COLOR == 'r')
+        lv_label_set_style(title, &text_red_style);
+    else
+        lv_label_set_style(title, &text_blue_style);
     lv_obj_align(title, NULL, LV_ALIGN_IN_TOP_MID, 0, 5);
 
 
@@ -89,10 +102,16 @@ void a_select(int selected)
     }
     else {
         //draw home button in corner of the screen
-        lv_obj_t * homeBtn = makeButton(0, lv_scr_act(), 20, 200, 60, 30, "Home", &whiteButtonREL, &whiteButtonPRES);
+        lv_obj_t * homeBtn = makeButton(0, lv_scr_act(), 15, 200, 60, 30, "Home", &whiteButtonREL, &whiteButtonPRES);
         lv_btn_set_action(homeBtn, LV_BTN_ACTION_CLICK, toFirstPage);
     }
 
+    //draw team color buttons
+    lv_obj_t * redBtn = makeButton(0, lv_scr_act(), 75, 200, 50, 30, "Red", &redButtonREL, &redButtonPRES);
+    lv_btn_set_action(redBtn, LV_BTN_ACTION_CLICK, set_team_color);
+
+    lv_obj_t * blueBtn = makeButton(1, lv_scr_act(), 130, 200, 50, 30, "Blue", &blueButtonREL, &blueButtonPRES);
+    lv_btn_set_action(blueBtn, LV_BTN_ACTION_CLICK, set_team_color);
 
     //making the actual page that will hold all of the autons
     lv_obj_t * page = lv_page_create(lv_scr_act(), NULL);
@@ -111,9 +130,9 @@ void a_select(int selected)
             lv_obj_t * but;
 
             if(i == selected)
-                but = makeButton(i, page, 0, 0, b_width, b_height, a_manager.getName(i).c_str(), &redButtonREL, &redButtonPRES);
+                but = makeButton(i, page, 0, ((b_height+10) * i), b_width, b_height, a_manager.getName(i).c_str(), &redButtonREL, &redButtonPRES);
             else
-                but = makeButton(i, page, 0, 0, b_width, b_height, a_manager.getName(i).c_str(), &blueButtonREL, &blueButtonPRES);
+                but = makeButton(i, page, 0, ((b_height+10) * i), b_width, b_height, a_manager.getName(i).c_str(), &blueButtonREL, &blueButtonPRES);
             lv_btn_set_action(but, LV_BTN_ACTION_CLICK, btn_click_action);
         }
     }

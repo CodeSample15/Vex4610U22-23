@@ -22,6 +22,9 @@ extern Points target_pos;
 extern PID turnPid;
 extern PID movePid;
 
+//constants
+extern char TEAM_COLOR;
+
 //variables
 extern double robot_x;
 extern double robot_y;
@@ -58,6 +61,8 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)()); //with a la
 
 void TurnToRotation(PID& turnPid, int degree, double speed);
 void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()); //same thing as the turn overload (driver control autonomous turning)
+
+void spinRollerToColor(char col);
 
 void spinPrep(); //warm the motors by building momentum in the fly wheel (faster to get to full speed)
 void spinUp(); //set the flywheel's speed according to the robot's position 

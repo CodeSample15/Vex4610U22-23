@@ -7,11 +7,13 @@
 
 AutonManager a_manager = AutonManager();
 
-Points target_pos = Points(-1480, -4645);
+Points target_pos = Points(0, 0);
 
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.001, 0.15, 40, 20, 10);
-PID movePid = PID(0.09, 0.00, 0.07, 15);
+PID movePid = PID(0.01, 0.00, 0.00, 20);
+
+char TEAM_COLOR = 'r';
 
 bool stopThreads;
 
@@ -43,12 +45,14 @@ void init()
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
 
-  xEncoderOffset = 1700;
+  xEncoderOffset = 7000;
 
   flyWheelSpeed = 0;
 
   xEncoder.reset();
   yEncoder.reset();
+
+  Strings.set_value(0);
 
   stopThreads = true;
 
@@ -106,11 +110,11 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     int ypos = yEncoder.get_position();
     double curRotation = gyro.get_rotation();
     double changeInRot = curRotation - lastRotationValue;
-    if(abs(changeInRot) < 0.8)
+    if(std::abs(changeInRot) < 0.9)
       changeInRot = 0; //deadzone for IMU change
 
-    double xDist = lastEncoderPositionX - xpos;
-    double yDist = lastEncoderPositionY - ypos;
+    double xDist = -(lastEncoderPositionX - xpos);
+    double yDist = -(lastEncoderPositionY - ypos);
     xDist += (changeInRot * xEncoderOffset * PI) / 180; //account for the offset of the x encoder
 
     xDist /= 100; //because the values that come out of this are too high
@@ -124,8 +128,11 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     double rot = getRegularRotation();
     double theta = rot*PI/180;
 
-    robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
-    robot_y += (cos(theta) * yDist) + (sin(theta) * xDist);
+    //robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
+    //robot_y += (cos(theta) * yDist) + (sin(-theta) * xDist);
+
+    robot_x += (cos(theta) * xDist);
+    robot_y += (sin(theta) * xDist);
 
     pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
@@ -180,7 +187,7 @@ void hardDriveStop()
 	LeftBack.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
 
   std::cout << RightFront.get_actual_velocity() << std::endl;
-  while(abs(RightFront.get_actual_velocity()) > 1) {
+  while(std::abs(RightFront.get_actual_velocity()) > 1) {
     RightFront.brake();
     RightBack.brake();
     LeftFront.brake();
@@ -205,7 +212,7 @@ void Move(int amount, int speed, bool hardstop)
   if(amount > 0)
     speed *= -1;
 
-  while(abs(yEncoder.get_position()) < amount) {
+  while(std::abs(yEncoder.get_position()) < amount) {
     RightFront.move(speed);
     RightBack.move(speed);
     LeftFront.move(speed);
@@ -220,12 +227,13 @@ void Move(int amount, int speed, bool hardstop)
 }
 
 
-void Move(PID& pid, int amount, double speed) 
+void Move(PID& pid, int amount, double s) 
 {
   yEncoder.reset();
+  double speed = 0;
 
   do {
-    speed = pid.calculate(yEncoder.get_position(), amount) * speed;
+    speed = pid.calculate(yEncoder.get_position(), amount) * s;
 
     RightFront.move(speed);
     RightBack.move(speed);
@@ -233,21 +241,22 @@ void Move(PID& pid, int amount, double speed)
     LeftBack.move(speed);
 
     pros::delay(10);
-  } while(abs((int)pid.error) > 2);
+  } while(std::abs(pid.error) > 2);
 
   hardDriveStop();
 }
 
 
-void Move(PID& pid, PID& turnPID, int amount, double speed) 
+void Move(PID& pid, PID& turnPID, int amount, double s) 
 {
   yEncoder.reset();
   double startRot = gyro.get_rotation(); //so that the current rotation of the gyro doesn't get messed up. This is for position tracking purposes and should be remove if we get a second gyro
 
   double turnAmount = 0;
+  double speed;
 
   do {
-    speed = pid.calculate(yEncoder.get_position(), amount) * speed;
+    speed = pid.calculate(yEncoder.get_position(), amount) * s;
     turnAmount = turnPID.calculate(gyro.get_rotation(), startRot);
 
     RightFront.move(speed - turnAmount);
@@ -256,7 +265,7 @@ void Move(PID& pid, PID& turnPID, int amount, double speed)
     LeftBack.move(speed + turnAmount);
 
     pros::delay(10);
-  } while(abs((int)pid.error) > 2 || abs((int)turnPID.error) > 3);
+  } while(std::abs(pid.error) > 2 || std::abs(turnPID.error) > 3);
 
   hardDriveStop();
 }
@@ -283,7 +292,7 @@ void Turn(PID& turnPid, int amount, double speed)
     RightBack.move(-turnSpeed);
     LeftFront.move(turnSpeed);
     LeftBack.move(turnSpeed);
-  } while(abs((int)turnPid.error) > 5);
+  } while(std::abs(turnPid.error) > 5);
 
   hardDriveStop();
 }
@@ -300,7 +309,7 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
     RightBack.move(-turnSpeed);
     LeftFront.move(turnSpeed);
     LeftBack.move(turnSpeed);
-  } while(abs((int)turnPid.error) > 5 && active());
+  } while(std::abs(turnPid.error) > 5 && active());
 
   hardDriveStop();
 }
@@ -316,11 +325,11 @@ void TurnToRotation(PID& turnPid, int degree, double speed)
   double distThree = (curRot + 360) - degree;
 
   //excecute turn
-  if(abs(distOne) < abs(distTwo) && abs(distOne) < abs(distThree)) {
+  if(std::abs(distOne) < std::abs(distTwo) && std::abs(distOne) < std::abs(distThree)) {
     std::cout << "Turn one was faster" << std::endl;
     Turn(turnPid, degree - curRot, speed);
   }
-  else if(abs(distTwo) < abs(distThree)) {
+  else if(std::abs(distTwo) < std::abs(distThree)) {
     std::cout << "Turn two was faster" << std::endl;
     Turn(turnPid, (degree + 360) - curRot, speed);
   }
@@ -341,11 +350,11 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
   double distThree = (curRot + 360) - degree;
 
   //excecute turn
-  if(abs(distOne) < abs(distTwo) && abs(distOne) < abs(distThree)) {
+  if(std::abs(distOne) < std::abs(distTwo) && std::abs(distOne) < std::abs(distThree)) {
     std::cout << "Turn one was faster" << std::endl;
     Turn(turnPid, degree - curRot, speed, active);
   }
-  else if(abs(distTwo) < abs(distThree)) {
+  else if(std::abs(distTwo) < std::abs(distThree)) {
     std::cout << "Turn two was faster" << std::endl;
     Turn(turnPid, (degree + 360) - curRot, speed, active);
   }
@@ -378,7 +387,7 @@ void spinDown()
 
 bool flyRecovering()
 {
-  return (abs(FlyWheel.get_actual_velocity()) < abs(flyWheelSpeed)-10);
+  return (std::abs(FlyWheel.get_actual_velocity()) < std::abs(flyWheelSpeed)-10);
 }
 
 void indexerBack()
@@ -397,23 +406,25 @@ void shoot(bool driving)
   if(driving) {
 
     //for driving, warn the driver that the fly wheel isn't ready by rumbling
-    if(flyRecovering) {
+    if(flyRecovering()) {
       controller.rumble("--");
     }
     else {
       indexerForward();
+      pros::delay(300);
+      indexerBack();
     }
 
   }
   else {
 
     //for auton, wait until the flywheel has recovered before continuing
-    while(flyRecovering)
+    while(flyRecovering())
       pros::delay(10);
 
     indexerForward();
     
-    while(flyRecovering)
+    while(flyRecovering())
       pros::delay(10);
 
     indexerBack();
@@ -421,6 +432,19 @@ void shoot(bool driving)
   }
 }
 
+void spinRollerToColor(char col) {
+  bool isAtColor = false;
+
+  do {
+    Roller.move_velocity(50);
+    if(col == 'r')
+      isAtColor = optical.get_rgb().red > (optical.get_rgb().blue + optical.get_rgb().green);
+    else
+      isAtColor = optical.get_rgb().blue > (optical.get_rgb().red + optical.get_rgb().green);;
+
+    pros::delay(10);
+  } while(!isAtColor);
+}
 
 void set_pos() 
 {
