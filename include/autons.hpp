@@ -4,6 +4,10 @@
 
 void load_autons(AutonManager& manager);
 
+inline void skills() {
+
+}
+
 inline void empty() {
 
 }
@@ -23,9 +27,9 @@ inline void load_autons(AutonManager& manager)
         1
         2
         3
-        4  5
+          4  5
     */
 
-    manager.addAuton(&empty, "No Auton", "Run when all is lost.", true, true, true, true, true);
+    manager.addAuton(&empty, "No Auton", "Run when all is lost", true, true, true, true, true);
     manager.addAuton(&roll, "Roll", "Drive up to roller and spin until color matches.", true, false, false, false, false);
 }

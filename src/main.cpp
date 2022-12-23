@@ -1,9 +1,5 @@
 /*
 	Current problems:
-		- Position tracking no work on new bot
-
-		- Position tracking preset start locations are still blank
-
 		- Flywheel auto spinup isn't tuned
 */
 
@@ -71,10 +67,7 @@ void controller_display()
 	}
 }
 
-void initialize()
-{
-	
-}
+void initialize() {}
 
 void disabled() {}
 
@@ -93,9 +86,10 @@ void autonomous()
 	if(selectedAuton != -1)
 	{
 		autonStarted = true;
-		runningAuton = true;
 		a_manager.runAuton(selectedAuton); //selectedAuton is from the autonSelectionPage files
-		runningAuton = false;
+	}
+	else if(RunningSkills) {
+		skills(); //in the autons.hpp file
 	}
 	else {
 		std::cout << "Auton not selected! Not running anything" << std::endl;

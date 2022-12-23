@@ -7,7 +7,7 @@
 
 AutonManager a_manager = AutonManager();
 
-Points target_pos = Points(0, 0);
+Points target_pos = Points(1337, 4037);
 
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.001, 0.15, 40, 20, 10);
@@ -27,10 +27,11 @@ int lastRotationValue; //last value to be stored in the imu
 double xEncoderOffset;
 
 bool autonStarted;
-bool runningAuton;
 
 int flyWheelSpeed;
 int maxShootDistance; //how far the bot has to be from the goal before it can't score with max rpm
+
+bool RunningSkills = false;
 
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
@@ -39,7 +40,6 @@ void init()
   indexerBack();
 
   autonStarted = false;
-  runningAuton = false;
 
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
@@ -128,11 +128,8 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
     double rot = getRegularRotation();
     double theta = rot*PI/180;
 
-    //robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
-    //robot_y += (cos(theta) * yDist) + (sin(-theta) * xDist);
-
-    robot_x += (cos(theta) * xDist);
-    robot_y += (sin(theta) * xDist);
+    robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
+    robot_y += (cos(theta) * yDist) + (sin(-theta) * xDist);
 
     pros::delay(20); //change this value to update the frequency that the position of the robot is updated
   }
@@ -451,33 +448,33 @@ void set_pos()
   switch(start_pos)
   {
     case ONE:
-      robot_x = 0;
+      robot_x = 1110;
       robot_y = 0;
       gyro.set_rotation(0);
       break;
 
     case TWO:
-      robot_x = 0;
+      robot_x = 2220;
       robot_y = 0;
       gyro.set_rotation(0);
       break;
 
     case THREE:
-      robot_x = 0;
+      robot_x = 3215;
       robot_y = 0;
       gyro.set_rotation(0);
       break;
 
     case FOUR:
-      robot_x = 0;
-      robot_y = 0;
-      gyro.set_rotation(0);
+      robot_x = 5590;
+      robot_y = 1550;
+      gyro.set_rotation(-90);
       break;
 
     case FIVE:
-      robot_x = 0;
-      robot_y = 0;
-      gyro.set_rotation(0);
+      robot_x = 5590;
+      robot_y = 2460;
+      gyro.set_rotation(-90);
       break;
   }
 }

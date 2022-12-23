@@ -36,9 +36,10 @@ extern double xEncoderOffset;
 
 extern bool stopThreads;
 extern bool autonStarted;
-extern bool runningAuton;
 
 extern int flyWheelSpeed;
+
+extern bool RunningSkills;
 
 //functions used by the main file
 void init(); //set variable values and stuff

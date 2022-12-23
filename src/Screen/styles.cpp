@@ -109,3 +109,16 @@ lv_obj_t * makeLabel(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t w
 
     return label;
 }
+
+lv_obj_t * makeGauge(lv_obj_t * parent, lv_coord_t x, lv_coord_t y, lv_coord_t width, lv_coord_t height, int32_t min, int32_t max, uint16_t angle, uint8_t line_count, uint8_t label_count, uint8_t needle_count, lv_color_t needle_colors[]) 
+{
+    lv_obj_t * gauge = lv_gauge_create(parent, NULL);
+    lv_obj_set_pos(gauge, x, y);
+    lv_obj_set_size(gauge, width, height);
+
+    lv_gauge_set_range(gauge, min, max);
+    lv_gauge_set_scale(gauge, angle, line_count, label_count);
+    lv_gauge_set_needle_count(gauge, needle_count, needle_colors);
+
+    return gauge;
+}
