@@ -7,10 +7,10 @@
 
 AutonManager a_manager = AutonManager();
 
-Points target_pos = Points(1337, 4037);
+Points target_pos = Points(1000, 4937);
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.5, 0.001, 0.15, 40, 20, 10);
+PID turnPid = PID(1.5, 0.01, 0.15, 40, 20, 10);
 PID movePid = PID(0.01, 0.00, 0.00, 20);
 
 char TEAM_COLOR = 'r';
@@ -96,8 +96,6 @@ void reset() //shouldn't really be a need for this, but I'm putting this here ju
 void update_pos() //this should ALWAYS be running to keep track of the robot's position
 {
   //ensure that everything was reset
-  robot_x = 0;
-  robot_y = 0;
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
 
@@ -364,6 +362,7 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
 void spinPrep()
 {
   FlyWheel.move_velocity(300); //spin up at 50% max RPM (600rpm is the max). Motor thinks it's going to 300rpm, but it's actually going higher due to the lack of a gearbox
+  flyWheelSpeed = 300;
 }
 
 void spinUp()
@@ -373,7 +372,7 @@ void spinUp()
   int speed = ((dist/maxShootDistance)*100) + 500; //rpm should increase as distance increases TUNE THIS
 
   FlyWheel.move_velocity(speed);
-  flyWheelSpeed = speed;
+  flyWheelSpeed = (speed > 600 ? 600 : speed);
 }
 
 void spinDown()
@@ -384,7 +383,7 @@ void spinDown()
 
 bool flyRecovering()
 {
-  return (std::abs(FlyWheel.get_actual_velocity()) < std::abs(flyWheelSpeed)-10);
+  return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 10; //return whether the flywheel is within 10 rpm of the desired amount
 }
 
 void indexerBack()

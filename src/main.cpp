@@ -182,7 +182,7 @@ void opcontrol() {
 			int targetRot = pos.angleTo(target_pos); //target pos is a predetermined Point object with the location of the goal
 
 			//turn while button is still pressed
-			TurnToRotation(turnPid, targetRot+180, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
+			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
 		}
 
 		//driving the intake
@@ -199,8 +199,10 @@ void opcontrol() {
 			IntakeTwo.brake();
 		}
 
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
 			FlyWheel.move_velocity(440);
+			flyWheelSpeed = 440;
+		}
 		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
 			spinDown();
 		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
@@ -210,6 +212,12 @@ void opcontrol() {
 			Roller.move_velocity(100);
 		else
 			Roller.brake();
+
+		//update the indicator to let the driver know visually if the flywheel is up to speed
+		if(!flyRecovering())
+			optical.set_led_pwm(100);
+		else
+			optical.set_led_pwm(0);
 
 		pros::delay(20);
 	}

@@ -16,6 +16,7 @@
 #define INERTIAL2_PORT 15
 
 #define OPTICAL_PORT 7
+#define INDICATOR_OPTICAL_PORT 12
 
 #define X_ENCODER_PORT 16
 #define Y_ENCODER_PORT 17
@@ -43,6 +44,7 @@ extern pros::Imu gyro;
 extern pros::Imu gyro2;
 
 extern pros::Optical optical;
+extern pros::Optical speedIndicator;
 
 extern pros::Rotation xEncoder;
 extern pros::Rotation yEncoder;

@@ -21,6 +21,7 @@ pros::Imu gyro = pros::Imu(INERTIAL1_PORT);
 pros::Imu gyro2 = pros::Imu(INERTIAL2_PORT);
 
 pros::Optical optical = pros::Optical(OPTICAL_PORT);
+pros::Optical speedIndicator = pros::Optical(INDICATOR_OPTICAL_PORT);
 
 pros::Rotation xEncoder = pros::Rotation(X_ENCODER_PORT);
 pros::Rotation yEncoder = pros::Rotation(Y_ENCODER_PORT);
