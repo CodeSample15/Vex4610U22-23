@@ -178,8 +178,7 @@ void opcontrol() {
 		}
 		else {
 			//calculate angle to the goal x y point (hardcoded)
-			Points pos(robot_x, robot_y);
-			int targetRot = pos.angleTo(target_pos); //target pos is a predetermined Point object with the location of the goal
+			int targetRot = getPositionXY().angleTo(target_pos); //target pos is a predetermined Point object with the location of the goal
 
 			//turn while button is still pressed
 			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });

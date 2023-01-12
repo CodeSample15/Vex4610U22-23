@@ -32,7 +32,10 @@ Points Points::vectorTo(Points& other)
 
 
 double Points::distanceTo(double x, double y) {
-  return sqrt((x*x) + (y*y));
+  double dx = Points::x - x;
+  double dy = Points::y - y;
+
+  return sqrt((dx*dx) + (dy*dy));
 }
 
 double Points::distanceTo(Points& other) {

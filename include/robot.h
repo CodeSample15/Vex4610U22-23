@@ -22,7 +22,7 @@
 #define Y_ENCODER_PORT 17
 
 #define INDEXER_PORT 'A'
-#define STRINGS_PORT 'H'
+#define STRINGS_PORT 'D'
 
 
 extern pros::Controller controller;

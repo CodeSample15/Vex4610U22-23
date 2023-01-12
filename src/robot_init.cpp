@@ -9,7 +9,7 @@ pros::Motor RightBack = pros::Motor(RIGHT_BACK_PORT);
 pros::Motor LeftFront = pros::Motor(LEFT_FRONT_PORT, true);
 pros::Motor LeftBack = pros::Motor(LEFT_BACK_PORT, true);
 
-pros::Motor Roller = pros::Motor(ROLLER_PORT);
+pros::Motor Roller = pros::Motor(ROLLER_PORT, true);
 
 pros::Motor IntakeOne = pros::Motor(INTAKE_ONE_PORT);
 pros::Motor IntakeTwo = pros::Motor(INTAKE_TWO_PORT);

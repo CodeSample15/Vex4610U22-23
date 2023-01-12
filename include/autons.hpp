@@ -12,6 +12,18 @@ inline void empty() {
 
 }
 
+inline void scorePreloads() {
+    Move(movePid, 1000, 1); //move away from the wall
+
+    spinUp();
+
+    int targetRot = getPositionXY().angleTo(target_pos);
+    TurnToRotation(turnPid, targetRot, 1);
+
+    shoot(false); //false for auton mode
+    shoot(false);
+}
+
 //add autons here
 inline void roll()
 {
@@ -31,5 +43,7 @@ inline void load_autons(AutonManager& manager)
     */
 
     manager.addAuton(&empty, "No Auton", "Run when all is lost", true, true, true, true, true);
+
+    manager.addAuton(&scorePreloads, "Preloads", "Score preloads into high goal. UNTESTED", true, true, true, true, true);
     manager.addAuton(&roll, "Roll", "Drive up to roller and spin until color matches.", true, false, false, false, false);
 }

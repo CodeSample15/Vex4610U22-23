@@ -7,18 +7,18 @@
 
 AutonManager a_manager = AutonManager();
 
-Points target_pos = Points(1000, 4937);
+Points target_pos = Points(1200, 4137);
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.5, 0.01, 0.15, 40, 20, 10);
+PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
 PID movePid = PID(0.01, 0.00, 0.00, 20);
 
 char TEAM_COLOR = 'r';
 
 bool stopThreads;
 
-double robot_x;
-double robot_y;
+double robot_x = 0;
+double robot_y = 0;
 
 int lastEncoderPositionX;
 int lastEncoderPositionY;
@@ -45,14 +45,16 @@ void init()
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
 
-  xEncoderOffset = 7000;
+  maxShootDistance = 10000;
+
+  xEncoderOffset = 10000;
 
   flyWheelSpeed = 0;
 
-  xEncoder.reset();
-  yEncoder.reset();
+  xEncoder.set_position(0);
+  yEncoder.set_position(0);
 
-  Strings.set_value(0);
+  Strings.set_value(0); //for the string launcher
 
   stopThreads = true;
 
@@ -71,9 +73,6 @@ void init()
     pros::delay(50);
   gyro.tare();
   gyro2.tare();
-
-  //set start position of the robot based off of what the user selected during auton selection
-  set_pos();
 
   //starting position tracking thread once everything is initialized
   pros::Task t(update_pos);
@@ -102,13 +101,15 @@ void update_pos() //this should ALWAYS be running to keep track of the robot's p
   xEncoder.set_position(0);
   yEncoder.set_position(0);
 
+  set_pos();
+
   while (true) {
     //add on to the amount moved between delay times (PositionUpdateRate)
     int xpos = xEncoder.get_position();
     int ypos = yEncoder.get_position();
     double curRotation = gyro.get_rotation();
     double changeInRot = curRotation - lastRotationValue;
-    if(std::abs(changeInRot) < 0.9)
+    if(std::abs(changeInRot) < 1)
       changeInRot = 0; //deadzone for IMU change
 
     double xDist = -(lastEncoderPositionX - xpos);
@@ -367,9 +368,12 @@ void spinPrep()
 
 void spinUp()
 {
-  double dist = getPositionXY().distanceTo(target_pos) - 100; //TUNE THIS (Min distance)
+  double dist = getPositionXY().distanceTo(target_pos);
 
-  int speed = ((dist/maxShootDistance)*100) + 500; //rpm should increase as distance increases TUNE THIS
+  double distPerc = (dist/maxShootDistance);
+  distPerc *= distPerc;
+
+  int speed = (distPerc*170) + 430; //rpm should increase as distance increases TUNE THIS
 
   FlyWheel.move_velocity(speed);
   flyWheelSpeed = (speed > 600 ? 600 : speed);
@@ -383,7 +387,7 @@ void spinDown()
 
 bool flyRecovering()
 {
-  return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 10; //return whether the flywheel is within 10 rpm of the desired amount
+  return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 5; //return whether the flywheel is within 10 rpm of the desired amount
 }
 
 void indexerBack()
@@ -400,17 +404,10 @@ void indexerForward()
 void shoot(bool driving)
 {
   if(driving) {
-
     //for driving, warn the driver that the fly wheel isn't ready by rumbling
-    if(flyRecovering()) {
-      controller.rumble("--");
-    }
-    else {
-      indexerForward();
-      pros::delay(300);
-      indexerBack();
-    }
-
+    indexerForward();
+    pros::delay(300);
+    indexerBack();
   }
   else {
 
@@ -444,36 +441,29 @@ void spinRollerToColor(char col) {
 
 void set_pos() 
 {
-  switch(start_pos)
-  {
-    case ONE:
-      robot_x = 1110;
-      robot_y = 0;
-      gyro.set_rotation(0);
-      break;
-
-    case TWO:
-      robot_x = 2220;
-      robot_y = 0;
-      gyro.set_rotation(0);
-      break;
-
-    case THREE:
-      robot_x = 3215;
-      robot_y = 0;
-      gyro.set_rotation(0);
-      break;
-
-    case FOUR:
-      robot_x = 5590;
-      robot_y = 1550;
-      gyro.set_rotation(-90);
-      break;
-
-    case FIVE:
-      robot_x = 5590;
-      robot_y = 2460;
-      gyro.set_rotation(-90);
-      break;
+  if(start_pos == ONE) {
+    robot_x = 1110;
+    robot_y = 0;
+    gyro.set_rotation(0);
+  }
+  else if(start_pos == TWO) {
+    robot_x = 2220;
+    robot_y = 0;
+    gyro.set_rotation(0);
+  }
+  else if(start_pos == THREE) {
+    robot_x = 3215;
+    robot_y = 0;
+    gyro.set_rotation(0);
+  }
+  else if(start_pos == FOUR) {
+    robot_x = 5590;
+    robot_y = 1550;
+    gyro.set_rotation(-90);
+  }
+  else if(start_pos == FIVE) {
+    robot_x = 5590;
+    robot_y = 2460;
+    gyro.set_rotation(-90);
   }
 }

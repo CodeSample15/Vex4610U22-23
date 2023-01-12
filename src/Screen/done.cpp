@@ -2,6 +2,7 @@
 #include "styles.hpp"
 #include "autonSelectionPage.hpp"
 #include "UserDefined/methods.h"
+#include "UserDefined/points.h"
 #include "robot.h"
 
 #include <string>
@@ -41,18 +42,22 @@ void doneScreen() //thread that runs until completion of the auton
 
     lv_obj_t * x_label = makeLabel(lv_scr_act(), 10, 10, 200, 20, "", &text_green_style);
     lv_obj_t * y_label = makeLabel(lv_scr_act(), 10, 50, 200, 20, "", &text_green_style);
+    lv_obj_t * distance_label = makeLabel(lv_scr_act(), 10, 90, 200, 20, "", &text_green_style);
 
     std::string x_string;
     std::string y_string;
+    std::string distance_string;
 
     while(true) {
         lv_gauge_set_value(flyWheelGauge, 0, FlyWheel.get_actual_velocity());
 
         x_string = "X: " + std::to_string(robot_x);
         y_string = "Y: " + std::to_string(robot_y);
+        distance_string = "Distance: " + std::to_string(getPositionXY().distanceTo(target_pos));
         
         lv_label_set_text(x_label, x_string.c_str());
         lv_label_set_text(y_label, y_string.c_str());
+        lv_label_set_text(distance_label, distance_string.c_str());
 
         pros::delay(20);
     }
