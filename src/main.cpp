@@ -19,6 +19,7 @@
 using namespace pros;
 
 bool competing = false;
+bool autoFlyWheelSpeedMode = false; //for driver control
 
 void display()
 {
@@ -99,7 +100,7 @@ void autonomous()
 void shootThread() {
 	while(true) {
 		//indexer
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
 			shoot(true);
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
 			indexerBack(); //change this in the future so that the indexing is less manual
@@ -112,12 +113,12 @@ void stringsThread() {
 	int count = 0;
 
 	while(true) {
-		if(controller.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_UP)) {
 			controller.rumble(".");
 			pros::delay(500);
 			count++;
 
-			if(count == 3 && controller.get_digital(E_CONTROLLER_DIGITAL_R2))
+			if(count == 3 && controller.get_digital(E_CONTROLLER_DIGITAL_UP))
 				Strings.set_value(1);
 		}
 		else {
@@ -201,11 +202,21 @@ void opcontrol() {
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
 			FlyWheel.move_velocity(440);
 			flyWheelSpeed = 440;
+			autoFlyWheelSpeedMode = false;
 		}
-		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
+		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 			spinDown();
-		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
-			spinUp();
+			autoFlyWheelSpeedMode = false;
+		}
+		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+			autoFlyWheelSpeedMode = true;
+		}
+
+
+		if(autoFlyWheelSpeedMode) {
+			spinUp(); //constantly adjust speed
+		}
+
 
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_R1))
 			Roller.move_velocity(100);
