@@ -1,6 +1,9 @@
 /*
 	Current problems:
-		- Flywheel auto spinup isn't tuned
+		- Preloads auton doesn't work (PID is acting funky)
+		- Move function is non functional (might be fixed)
+		- Reset button doesn't work as intented
+		- Position tracking might be out of wack again
 */
 
 #include <string>
@@ -97,10 +100,11 @@ void autonomous()
 	}
 }
 
+//in a separate thread to allow time for the piston to fully retract without pausing the main drive code
 void shootThread() {
 	while(true) {
 		//indexer
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
 			shoot(true);
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
 			indexerBack(); //change this in the future so that the indexing is less manual
@@ -109,10 +113,18 @@ void shootThread() {
 	}
 }
 
-void stringsThread() {
-	int count = 0;
+/*
+	Both the string launcher and the reset position system require a button to be held for a certain amount of time. For this reason, I've placed them into a different thread to prevent them from stopping the main drive code from running
+
+	Since the two buttons are most likely never going to be pressed at the same time (because why would they ever), I've placed the functions into the same thread.
+	Is this bad practice? Maybe. But I don't care.
+*/
+void stringsAndResetThread() {
+	int count = 0; //excuse the bad naming, but they both do the same thing, just for seperate buttons
+	int otherCount = 0;
 
 	while(true) {
+		//STRINGS
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_UP)) {
 			controller.rumble(".");
 			pros::delay(500);
@@ -125,11 +137,53 @@ void stringsThread() {
 			count = 0;
 		}
 
+		//RESET POSITION
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_LEFT) && otherCount != -1) {
+			pros::delay(1000);
+			otherCount++;
+
+			if(otherCount == 2 && controller.get_digital(E_CONTROLLER_DIGITAL_LEFT)) {
+				reset();
+				controller.rumble("-"); //long rumble to tell driver the position was reset
+				otherCount = -1;
+			}
+		}
+		else if (otherCount != 0){
+			otherCount = 0;
+		}
+		else if(controller.get_digital(E_CONTROLLER_DIGITAL_LEFT) == 0) {
+			otherCount = 0;
+		}
+		
+
 		pros::delay(10);
 	}
 }
 
 void opcontrol() {
+
+	/*
+		Current controls:
+
+		Forward/Backward:              Left analog stick
+		Right/Left:                    Right analog stick
+		Auto aim:                      A
+		Shoot:                         R1
+		Retract piston:                Down arrow
+		Intake/Outtake:                L1/L2
+		Flywheel to constant speed:    X
+		Flywheel off:                  B
+		Flywheel automatic modeL       Y
+		Spin Roller:                   R2
+		Expand (strings):              Up arrow (hold)
+		Reset position:                Left arrow (hold)
+
+	    Open button(s):
+			* Right arrow
+	*/
+
+
+
 	if(!competing) {
 		Task x(record); //instant replay
 
@@ -156,7 +210,7 @@ void opcontrol() {
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
 	pros::Task shoot(shootThread);
-	pros::Task s(stringsThread);
+	pros::Task s(stringsAndResetThread);
 
 	while (true) {
 
@@ -218,7 +272,7 @@ void opcontrol() {
 		}
 
 
-		if(controller.get_digital(E_CONTROLLER_DIGITAL_R1))
+		if(controller.get_digital(E_CONTROLLER_DIGITAL_R2))
 			Roller.move_velocity(100);
 		else
 			Roller.brake();

@@ -13,6 +13,8 @@ inline void empty() {
 }
 
 inline void scorePreloads() {
+    spinPrep();
+
     Move(movePid, 1000, 1); //move away from the wall
 
     spinUp();

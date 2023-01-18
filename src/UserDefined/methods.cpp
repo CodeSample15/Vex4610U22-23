@@ -1,3 +1,11 @@
+/*
+  * Author: Luke Crimi
+  * Created: 2022
+
+  * Contains all of the necessary methods and variables to easily 
+    create autons and prep the initialize the robot before a game
+*/
+
 #include "UserDefined/methods.h"
 #include "Screen/firstPage.hpp"
 #include "api.h"
@@ -11,7 +19,7 @@ Points target_pos = Points(1200, 4137);
 
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
-PID movePid = PID(0.01, 0.00, 0.00, 20);
+PID movePid = PID(0.5, 0.00, 0.25, 20);
 
 char TEAM_COLOR = 'r';
 
@@ -78,16 +86,19 @@ void init()
   pros::Task t(update_pos);
 }
 
-void reset() //shouldn't really be a need for this, but I'm putting this here just in case
+void reset()
 {
   //reset position
-  robot_x = 0;
-  robot_y = 0;
   lastEncoderPositionX = 0;
   lastEncoderPositionY = 0;
   lastRotationValue = 0;
-  xEncoder.reset();
-  yEncoder.reset();
+  xEncoder.set_position(0);
+  yEncoder.set_position(0);
+
+  pros::delay(200); //give the position tracking thread some time to catch up
+
+  robot_x = 0;
+  robot_y = 0;
 
   indexerBack();
 }
@@ -225,18 +236,19 @@ void Move(int amount, int speed, bool hardstop)
 
 void Move(PID& pid, int amount, double s) 
 {
-  yEncoder.reset();
+  int start_pos = yEncoder.get_position();
   double speed = 0;
 
   do {
-    speed = pid.calculate(yEncoder.get_position(), amount) * s;
+    speed = pid.calculate(yEncoder.get_position() - start_pos, -amount);
+    speed *= -s;
+
+    speed += (speed>0 ? 3 : -3); //add a minimum of 3 to the total voltage to prevent bot from getting stuck
 
     RightFront.move(speed);
     RightBack.move(speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
-
-    pros::delay(10);
   } while(std::abs(pid.error) > 2);
 
   hardDriveStop();
