@@ -4,6 +4,7 @@
 		- Move function is non functional (might be fixed)
 		- Reset button doesn't work as intented
 		- Position tracking might be out of wack again
+		- Flywheel PID is bad
 */
 
 #include <string>
@@ -217,19 +218,26 @@ void opcontrol() {
 		//auto aim button (hold to activate)
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_A) == 0) {
 			//regular drive code
+			double rightControllerX = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+			double leftControllerY = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 
-			curvedTurn = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) / 127.0; //mapping the input betweeen 0 and 1;
+			//convert to RPM (200)
+			rightControllerX = (rightControllerX / 127) * 200;
+			leftControllerY = (leftControllerY / 127) * 200;
+
+
+			curvedTurn = rightControllerX / 200.0; //mapping the input betweeen 0 and 1;
 			negative = curvedTurn < 0;
 			curvedTurn = pow(curvedTurn, 2); //curvedTurn^2
-			curvedTurn *= 127 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
+			curvedTurn *= 200 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
 
-			rightSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) - (int)curvedTurn * 1.5;
-			leftSpeed = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) + (int)curvedTurn * 1.5;
+			rightSpeed = leftControllerY - (int)curvedTurn * 1.5;
+			leftSpeed = leftControllerY + (int)curvedTurn * 1.5;
 
-			RightFront.move(rightSpeed);
-			RightBack.move(rightSpeed);
-			LeftFront.move(leftSpeed);
-			LeftBack.move(leftSpeed);
+			RightFront.move_velocity(rightSpeed);
+			RightBack.move_velocity(rightSpeed);
+			LeftFront.move_velocity(leftSpeed);
+			LeftBack.move_velocity(leftSpeed);
 		}
 		else {
 			//calculate angle to the goal x y point (hardcoded)
