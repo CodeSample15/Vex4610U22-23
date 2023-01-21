@@ -20,6 +20,7 @@ Points target_pos = Points(1200, 4137);
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
 PID movePid = PID(0.5, 0.00, 0.25, 20);
+PID flyWheelPid = PID(0.45, 0.0, 0.1, 10, 300, 40, 127);
 
 char TEAM_COLOR = 'r';
 
@@ -42,6 +43,24 @@ int maxShootDistance; //how far the bot has to be from the goal before it can't 
 bool RunningSkills = false;
 
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
+
+void flyWheelThread()
+{
+  //to continuously update the flywheel speed using a custom pid
+  double result;
+
+  while(true) 
+  {
+    result = flyWheelPid.calculate(FlyWheel.get_actual_velocity(), flyWheelSpeed);
+    result = (result > 0 ? result : 0); //clamp the result to be only positive
+    result = (result <= 127 ? result : 127); //clamp the result to be within the correct range
+
+    FlyWheel.move(result);
+  }
+}
+
+pros::Task f_thread(flyWheelThread);
+
 
 void init()
 {
@@ -374,7 +393,6 @@ void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)())
 
 void spinPrep()
 {
-  FlyWheel.move_velocity(300); //spin up at 50% max RPM (600rpm is the max). Motor thinks it's going to 300rpm, but it's actually going higher due to the lack of a gearbox
   flyWheelSpeed = 300;
 }
 
@@ -387,13 +405,11 @@ void spinUp()
 
   int speed = (distPerc*170) + 430; //rpm should increase as distance increases TUNE THIS
 
-  FlyWheel.move_velocity(speed);
   flyWheelSpeed = (speed > 600 ? 600 : speed);
 }
 
 void spinDown()
 {
-  FlyWheel.brake(); //coasting brake mode
   flyWheelSpeed = 0;
 }
 

@@ -21,6 +21,7 @@ extern Points target_pos;
 //PID objects
 extern PID turnPid;
 extern PID movePid;
+extern PID flyWheelPid;
 
 //constants
 extern char TEAM_COLOR;

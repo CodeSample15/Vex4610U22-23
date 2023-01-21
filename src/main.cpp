@@ -4,7 +4,6 @@
 		- Move function is non functional (might be fixed)
 		- Reset button doesn't work as intented
 		- Position tracking might be out of wack again
-		- Flywheel PID is bad
 */
 
 #include <string>

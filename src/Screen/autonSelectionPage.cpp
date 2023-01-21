@@ -23,7 +23,7 @@ static lv_res_t btn_click_action(lv_obj_t * btn)
 static lv_res_t lock_btn_action(lv_obj_t * btn)
 {  
     pros::Task e(doneScreen); //start the doneScreen task
-    init(); //initialize the robot
+    //init(); //initialize the robot
 
     return LV_RES_OK;
 }
