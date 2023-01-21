@@ -20,7 +20,7 @@ Points target_pos = Points(1200, 4137);
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
 PID movePid = PID(0.5, 0.00, 0.25, 20);
-PID flyWheelPid = PID(0.45, 0.0, 0.15, 10, 300, 40, 127);
+PID flyWheelPid = PID(0.43, 0.0, 0.15, 5, 300, 40, 127);
 
 char TEAM_COLOR = 'r';
 

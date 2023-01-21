@@ -191,7 +191,6 @@ void opcontrol() {
 		Task f(controller_display);
 		Task t(display);
 
-
 		init(); //all the initialization will happen in the methods file
 	}
 
