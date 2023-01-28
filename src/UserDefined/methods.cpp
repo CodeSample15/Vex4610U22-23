@@ -15,8 +15,6 @@
 
 AutonManager a_manager = AutonManager();
 
-Points target_pos = Points(1200, 4137);
-
 //initializing the pid objects with their respective tunes
 PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
 PID movePid = PID(0.5, 0.00, 0.25, 20);
@@ -25,20 +23,9 @@ PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 20, 127);
 char TEAM_COLOR = 'r';
 
 bool stopThreads;
-
-double robot_x = 0;
-double robot_y = 0;
-
-int lastEncoderPositionX;
-int lastEncoderPositionY;
-int lastRotationValue; //last value to be stored in the imu
-
-double xEncoderOffset;
-
 bool autonStarted;
 
 int flyWheelSpeed;
-int maxShootDistance; //how far the bot has to be from the goal before it can't score with max rpm
 
 bool RunningSkills = false;
 
@@ -67,19 +54,7 @@ void init()
   indexerBack();
 
   autonStarted = false;
-
-  lastEncoderPositionX = 0;
-  lastEncoderPositionY = 0;
-  lastRotationValue = 0;
-
-  maxShootDistance = 10000;
-
-  xEncoderOffset = 10000;
-
   flyWheelSpeed = 0;
-
-  xEncoder.set_position(0);
-  yEncoder.set_position(0);
 
   Strings.set_value(0); //for the string launcher
 
@@ -100,73 +75,27 @@ void init()
     pros::delay(50);
   gyro.tare();
   gyro2.tare();
-
-  //starting position tracking thread once everything is initialized
-  pros::Task t(update_pos);
 }
 
 void reset()
 {
-  //reset position
-  lastEncoderPositionX = 0;
-  lastEncoderPositionY = 0;
-  lastRotationValue = 0;
-  xEncoder.set_position(0);
-  yEncoder.set_position(0);
-
-  pros::delay(200); //give the position tracking thread some time to catch up
-
-  robot_x = 0;
-  robot_y = 0;
-
   indexerBack();
 }
 
-void update_pos() //this should ALWAYS be running to keep track of the robot's position
-{
-  //ensure that everything was reset
-  lastEncoderPositionX = 0;
-  lastEncoderPositionY = 0;
-
-  xEncoder.set_position(0);
-  yEncoder.set_position(0);
-
-  set_pos();
-
-  while (true) {
-    //add on to the amount moved between delay times (PositionUpdateRate)
-    int xpos = xEncoder.get_position();
-    int ypos = yEncoder.get_position();
-    double curRotation = gyro.get_rotation();
-    double changeInRot = curRotation - lastRotationValue;
-    if(std::abs(changeInRot) < 1)
-      changeInRot = 0; //deadzone for IMU change
-
-    double xDist = -(lastEncoderPositionX - xpos);
-    double yDist = -(lastEncoderPositionY - ypos);
-    xDist += (changeInRot * xEncoderOffset * PI) / 180; //account for the offset of the x encoder
-
-    xDist /= 100; //because the values that come out of this are too high
-    yDist /= 100;
-
-    lastEncoderPositionX = xpos;
-    lastEncoderPositionY = ypos;
-    lastRotationValue = curRotation;
-
-    //change x and y location of the robot based off of the rotation of the robot
-    double rot = getRegularRotation();
-    double theta = rot*PI/180;
-
-    robot_x += (sin(theta) * yDist) + (cos(theta) * xDist);
-    robot_y += (cos(theta) * yDist) + (sin(-theta) * xDist);
-
-    pros::delay(20); //change this value to update the frequency that the position of the robot is updated
-  }
+void reset_position() {
+  RightFront.tare_position();
+  RightBack.tare_position();
+  LeftFront.tare_position();
+  LeftBack.tare_position();
 }
 
-Points getPositionXY()
-{
-  return Points((double)robot_x, (double)robot_y);
+double get_avr_pos() {
+  double one = RightFront.get_position();
+  double two = RightBack.get_position();
+  double three = LeftFront.get_position();
+  double four = LeftBack.get_position();
+
+  return (one+two+three+four) / 4;
 }
 
 double getRotation()
@@ -233,12 +162,12 @@ void hardDriveStop()
 
 void Move(int amount, int speed, bool hardstop) 
 {
-  yEncoder.reset();
+  reset_position();
 
   if(amount > 0)
     speed *= -1;
 
-  while(std::abs(yEncoder.get_position()) < amount) {
+  while(std::abs(get_avr_pos()) < amount) {
     RightFront.move(speed);
     RightBack.move(speed);
     LeftFront.move(speed);
@@ -255,12 +184,12 @@ void Move(int amount, int speed, bool hardstop)
 
 void Move(PID& pid, int amount, double s) 
 {
-  int start_pos = yEncoder.get_position();
+  reset_position();
   double speed = 0;
 
   do {
-    speed = pid.calculate(yEncoder.get_position() - start_pos, -amount);
-    speed *= -s;
+    speed = pid.calculate(std::abs(get_avr_pos()), amount);
+    speed *= s;
 
     speed += (speed>0 ? 3 : -3); //add a minimum of 3 to the total voltage to prevent bot from getting stuck
 
@@ -276,14 +205,14 @@ void Move(PID& pid, int amount, double s)
 
 void Move(PID& pid, PID& turnPID, int amount, double s) 
 {
-  yEncoder.reset();
+  reset_position();
   double startRot = gyro.get_rotation(); //so that the current rotation of the gyro doesn't get messed up. This is for position tracking purposes and should be remove if we get a second gyro
 
   double turnAmount = 0;
   double speed;
 
   do {
-    speed = pid.calculate(yEncoder.get_position(), amount) * s;
+    speed = pid.calculate(get_avr_pos(), amount) * s;
     turnAmount = turnPID.calculate(gyro.get_rotation(), startRot);
 
     RightFront.move(speed - turnAmount);
@@ -295,16 +224,6 @@ void Move(PID& pid, PID& turnPID, int amount, double s)
   } while(std::abs(pid.error) > 2 || std::abs(turnPID.error) > 3);
 
   hardDriveStop();
-}
-
-void MoveTo(PID& pid, PID& turnPid, int x, int y, double turnSpeed, double moveSpeed) {
-  Points pos(robot_x, robot_y);
-  Points target(x, y);
-	int targetRot = pos.angleTo(target);
-  int distance = pos.distanceTo(target);
-
-  TurnToRotation(turnPid, targetRot, turnSpeed);
-  Move(pid, distance, moveSpeed);
 }
 
 void Turn(PID& turnPid, int amount, double speed) 
@@ -341,56 +260,6 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
   hardDriveStop();
 }
 
-void TurnToRotation(PID& turnPid, int degree, double speed) 
-{
-  //get local rotation
-  double curRot = getRotation();
-
-  //determine quickest way to turn to that rotation
-  double distOne = degree - curRot;
-  double distTwo = (degree + 360) - curRot;
-  double distThree = (curRot + 360) - degree;
-
-  //excecute turn
-  if(std::abs(distOne) < std::abs(distTwo) && std::abs(distOne) < std::abs(distThree)) {
-    std::cout << "Turn one was faster" << std::endl;
-    Turn(turnPid, degree - curRot, speed);
-  }
-  else if(std::abs(distTwo) < std::abs(distThree)) {
-    std::cout << "Turn two was faster" << std::endl;
-    Turn(turnPid, (degree + 360) - curRot, speed);
-  }
-  else {
-    std::cout << "Turn three was faster" << std::endl;
-    Turn(turnPid, (curRot + 360) - degree, speed);
-  }
-}
-
-void TurnToRotation(PID& turnPid, int degree, double speed, bool (*active)()) 
-{
-  //get local rotation
-  double curRot = getRotation();
-
-  //determine quickest way to turn to that rotation
-  double distOne = degree - curRot;
-  double distTwo = (degree + 360) - curRot;
-  double distThree = (curRot + 360) - degree;
-
-  //excecute turn
-  if(std::abs(distOne) < std::abs(distTwo) && std::abs(distOne) < std::abs(distThree)) {
-    std::cout << "Turn one was faster" << std::endl;
-    Turn(turnPid, degree - curRot, speed, active);
-  }
-  else if(std::abs(distTwo) < std::abs(distThree)) {
-    std::cout << "Turn two was faster" << std::endl;
-    Turn(turnPid, (degree + 360) - curRot, speed, active);
-  }
-  else {
-    std::cout << "Turn three was faster" << std::endl;
-    Turn(turnPid, (curRot + 360) - degree, speed, active);
-  }
-}
-
 void spinPrep()
 {
   flyWheelSpeed = 300;
@@ -398,14 +267,7 @@ void spinPrep()
 
 void spinUp()
 {
-  double dist = getPositionXY().distanceTo(target_pos);
-
-  double distPerc = (dist/maxShootDistance);
-  distPerc *= distPerc;
-
-  int speed = (distPerc*170) + 430; //rpm should increase as distance increases TUNE THIS
-
-  flyWheelSpeed = (speed > 600 ? 600 : speed);
+  flyWheelSpeed = 500;
 }
 
 void spinDown()
@@ -465,33 +327,4 @@ void spinRollerToColor(char col) {
 
     pros::delay(10);
   } while(!isAtColor);
-}
-
-void set_pos() 
-{
-  if(start_pos == ONE) {
-    robot_x = 1110;
-    robot_y = 0;
-    gyro.set_rotation(0);
-  }
-  else if(start_pos == TWO) {
-    robot_x = 2220;
-    robot_y = 0;
-    gyro.set_rotation(0);
-  }
-  else if(start_pos == THREE) {
-    robot_x = 3215;
-    robot_y = 0;
-    gyro.set_rotation(0);
-  }
-  else if(start_pos == FOUR) {
-    robot_x = 5590;
-    robot_y = 1550;
-    gyro.set_rotation(-90);
-  }
-  else if(start_pos == FIVE) {
-    robot_x = 5590;
-    robot_y = 2460;
-    gyro.set_rotation(-90);
-  }
 }

@@ -9,8 +9,6 @@
 #include <string>
 #include <iostream>
 #include "UserDefined/methods.h"
-#include "UserDefined/points.h"
-#include "UserDefined/Replay.h"
 #include "Screen/styles.hpp"
 #include "Screen/firstPage.hpp"
 #include "Screen/autonSelectionPage.hpp"
@@ -22,7 +20,6 @@
 using namespace pros;
 
 bool competing = false;
-bool autoFlyWheelSpeedMode = false; //for driver control
 
 void display()
 {
@@ -31,29 +28,13 @@ void display()
 	std::cout << "Running display thread" << std::endl;
 
 	while(true) {
-		lcd::set_text(0, "X Position: " + std::to_string(robot_x));
-		lcd::set_text(1, "Y Position: " + std::to_string(robot_y));
 		lcd::set_text(2, "Rotation: " + std::to_string(gyro.get_rotation()));
 		lcd::set_text(3, "Blue: " + std::to_string(optical.get_rgb().blue));
 		lcd::set_text(4, "Red: " + std::to_string(optical.get_rgb().red));
-		lcd::set_text(5, "xOdom: " + std::to_string(xEncoder.get_position()));
-		lcd::set_text(6, "yOdom: " + std::to_string(yEncoder.get_position()));
 
 		pros::delay(20);
 
 		lcd::clear();
-	}
-}
-
-bool recording;
-void record()
-{
-	Replay replay(50);
-	recording = true;
-
-	while(recording)
-	{
-		replay.record();
 	}
 }
 
@@ -62,8 +43,6 @@ void controller_display()
 	controller.clear();
 
 	while(true) {
-		controller.set_text(0, 0, "X: " + std::to_string((int)robot_x) + "  Y: " + std::to_string((int)robot_y));
-		pros::delay(60);
 		controller.set_text(1,0,"Rot: " + std::to_string(gyro.get_rotation()));
 		pros::delay(60);
 		controller.set_text(2, 0, "Flywheel temp: " + std::to_string((int)FlyWheel.get_temperature()));
@@ -137,25 +116,6 @@ void stringsAndResetThread() {
 			count = 0;
 		}
 
-		//RESET POSITION
-		if(controller.get_digital(E_CONTROLLER_DIGITAL_LEFT) && otherCount != -1) {
-			pros::delay(1000);
-			otherCount++;
-
-			if(otherCount == 2 && controller.get_digital(E_CONTROLLER_DIGITAL_LEFT)) {
-				reset();
-				controller.rumble("-"); //long rumble to tell driver the position was reset
-				otherCount = -1;
-			}
-		}
-		else if (otherCount != 0){
-			otherCount = 0;
-		}
-		else if(controller.get_digital(E_CONTROLLER_DIGITAL_LEFT) == 0) {
-			otherCount = 0;
-		}
-		
-
 		pros::delay(10);
 	}
 }
@@ -185,8 +145,6 @@ void opcontrol() {
 
 
 	if(!competing) {
-		Task x(record); //instant replay
-
 		//for driver testing
 		Task f(controller_display);
 		Task t(display);
@@ -212,69 +170,45 @@ void opcontrol() {
 	pros::Task s(stringsAndResetThread);
 
 	while (true) {
+		//regular drive code
+		double rightControllerX = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+		double leftControllerY = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 
-		//auto aim button (hold to activate)
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_A) == 0) {
-			//regular drive code
-			double rightControllerX = controller.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-			double leftControllerY = controller.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-
-			//convert to RPM (200)
-			rightControllerX = (rightControllerX / 127) * 200;
-			leftControllerY = (leftControllerY / 127) * 200;
+		//convert to RPM (200)
+		rightControllerX = (rightControllerX / 127) * 200;
+		leftControllerY = (leftControllerY / 127) * 200;
 
 
-			curvedTurn = rightControllerX / 200.0; //mapping the input betweeen 0 and 1;
-			negative = curvedTurn < 0;
-			curvedTurn = pow(curvedTurn, 2); //curvedTurn^2
-			curvedTurn *= 200 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
+		curvedTurn = rightControllerX / 200.0; //mapping the input betweeen 0 and 1;
+		negative = curvedTurn < 0;
+		curvedTurn = pow(curvedTurn, 2); //curvedTurn^2
+		curvedTurn *= 200 * (negative && curvedTurn > 0 ? -1 : 1); //returning the output value to the desired range
 
-			rightSpeed = leftControllerY - (int)curvedTurn * 1.5;
-			leftSpeed = leftControllerY + (int)curvedTurn * 1.5;
+		rightSpeed = leftControllerY - (int)curvedTurn * 1.5;
+		leftSpeed = leftControllerY + (int)curvedTurn * 1.5;
 
-			RightFront.move_velocity(rightSpeed);
-			RightBack.move_velocity(rightSpeed);
-			LeftFront.move_velocity(leftSpeed);
-			LeftBack.move_velocity(leftSpeed);
-		}
-		else {
-			//calculate angle to the goal x y point (hardcoded)
-			int targetRot = getPositionXY().angleTo(target_pos); //target pos is a predetermined Point object with the location of the goal
-
-			//turn while button is still pressed
-			TurnToRotation(turnPid, targetRot, 1, [](){ return controller.get_digital(E_CONTROLLER_DIGITAL_A)==1; });
-		}
+		RightFront.move_velocity(rightSpeed);
+		RightBack.move_velocity(rightSpeed);
+		LeftFront.move_velocity(leftSpeed);
+		LeftBack.move_velocity(leftSpeed);
 
 		//driving the intake
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_L1) == 1) {
 			IntakeOne.move(127);
-			IntakeTwo.move(127);
 		}
 		else if(controller.get_digital(E_CONTROLLER_DIGITAL_L2) == 1) {
 			IntakeOne.move(-127);
-			IntakeTwo.move(-127);
 		}
 		else {
 			IntakeOne.brake();
-			IntakeTwo.brake();
 		}
 
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
 			FlyWheel.move_velocity(440);
 			flyWheelSpeed = 440;
-			autoFlyWheelSpeedMode = false;
 		}
 		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 			spinDown();
-			autoFlyWheelSpeedMode = false;
-		}
-		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
-			autoFlyWheelSpeedMode = true;
-		}
-
-
-		if(autoFlyWheelSpeedMode) {
-			spinUp(); //constantly adjust speed
 		}
 
 

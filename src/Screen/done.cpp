@@ -2,7 +2,6 @@
 #include "styles.hpp"
 #include "autonSelectionPage.hpp"
 #include "UserDefined/methods.h"
-#include "UserDefined/points.h"
 #include "robot.h"
 
 #include <string>
@@ -50,10 +49,6 @@ void doneScreen() //thread that runs until completion of the auton
 
     while(true) {
         lv_gauge_set_value(flyWheelGauge, 0, FlyWheel.get_actual_velocity());
-
-        x_string = "X: " + std::to_string(robot_x);
-        y_string = "Y: " + std::to_string(robot_y);
-        distance_string = "Distance: " + std::to_string(getPositionXY().distanceTo(target_pos));
         
         lv_label_set_text(x_label, x_string.c_str());
         lv_label_set_text(y_label, y_string.c_str());

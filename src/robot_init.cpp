@@ -12,7 +12,6 @@ pros::Motor LeftBack = pros::Motor(LEFT_BACK_PORT, true);
 pros::Motor Roller = pros::Motor(ROLLER_PORT, true);
 
 pros::Motor IntakeOne = pros::Motor(INTAKE_ONE_PORT);
-pros::Motor IntakeTwo = pros::Motor(INTAKE_TWO_PORT);
 
 pros::Motor FlyWheel = pros::Motor(FLYWHEEL_PORT, pros::E_MOTOR_GEAR_600); //600 rpm cuz that's the highest and we don't have a gearbox
 
@@ -22,9 +21,6 @@ pros::Imu gyro2 = pros::Imu(INERTIAL2_PORT);
 
 pros::Optical optical = pros::Optical(OPTICAL_PORT);
 pros::Optical speedIndicator = pros::Optical(INDICATOR_OPTICAL_PORT);
-
-pros::Rotation xEncoder = pros::Rotation(X_ENCODER_PORT);
-pros::Rotation yEncoder = pros::Rotation(Y_ENCODER_PORT);
 
 pros::ADIDigitalOut Indexer = pros::ADIDigitalOut(INDEXER_PORT);
 pros::ADIDigitalOut Strings = pros::ADIDigitalOut(STRINGS_PORT);

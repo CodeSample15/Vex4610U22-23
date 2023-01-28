@@ -8,7 +8,6 @@
 #define ROLLER_PORT 12
 
 #define INTAKE_ONE_PORT 11
-#define INTAKE_TWO_PORT 13
 
 #define FLYWHEEL_PORT 7
 
@@ -17,9 +16,6 @@
 
 #define OPTICAL_PORT 4
 #define INDICATOR_OPTICAL_PORT 12
-
-#define X_ENCODER_PORT 17
-#define Y_ENCODER_PORT 20
 
 #define INDEXER_PORT 'A'
 #define STRINGS_PORT 'B'
@@ -36,7 +32,6 @@ extern pros::Motor LeftBack;
 extern pros::Motor Roller;
 
 extern pros::Motor IntakeOne;
-extern pros::Motor IntakeTwo;
 
 extern pros::Motor FlyWheel;
 
@@ -45,9 +40,6 @@ extern pros::Imu gyro2;
 
 extern pros::Optical optical;
 extern pros::Optical speedIndicator;
-
-extern pros::Rotation xEncoder;
-extern pros::Rotation yEncoder;
 
 extern pros::ADIDigitalOut Indexer;
 extern pros::ADIDigitalOut Strings;
