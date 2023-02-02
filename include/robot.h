@@ -17,7 +17,6 @@
 #define OPTICAL_PORT 4
 #define INDICATOR_OPTICAL_PORT 12
 
-#define INDEXER_PORT 'A'
 #define STRINGS_PORT 'B'
 
 
@@ -41,5 +40,4 @@ extern pros::Imu gyro2;
 extern pros::Optical optical;
 extern pros::Optical speedIndicator;
 
-extern pros::ADIDigitalOut Indexer;
 extern pros::ADIDigitalOut Strings;

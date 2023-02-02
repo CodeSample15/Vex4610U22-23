@@ -32,7 +32,6 @@ extern bool RunningSkills;
 
 //functions used by the main file
 void init(); //set variable values and stuff
-void reset(); //resets rotation, odometers, variables, etc
 double getRotation(); //returns the local rotation of the robot
 double getRegularRotation(); //between -360 and 360
 
@@ -56,8 +55,5 @@ void spinUp(); //set the flywheel's speed according to the robot's position
 void spinDown(); //turn off the flywheel
 
 bool flyRecovering(); //if the flywheel is still recovering from the last fire
-
-void indexerBack();
-void indexerForward();
 
 void shoot(bool driving); //toggle the indexer and shoot a disk but only if the flywheel is up to speed. Boolean is for whether this is an auton or not

@@ -79,19 +79,6 @@ void autonomous()
 	}
 }
 
-//in a separate thread to allow time for the piston to fully retract without pausing the main drive code
-void shootThread() {
-	while(true) {
-		//indexer
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
-			shoot(true);
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
-			indexerBack(); //change this in the future so that the indexing is less manual
-
-		delay(10);
-	}
-}
-
 /*
 	Both the string launcher and the reset position system require a button to be held for a certain amount of time. For this reason, I've placed them into a different thread to prevent them from stopping the main drive code from running
 
@@ -128,7 +115,7 @@ void opcontrol() {
 		Forward/Backward:              Left analog stick
 		Right/Left:                    Right analog stick
 		Auto aim:                      A
-		Shoot:                         R1
+		Shoot:                         L2 (Outtake)
 		Retract piston:                Down arrow
 		Intake/Outtake:                L1/L2
 		Flywheel to constant speed:    X
@@ -166,7 +153,6 @@ void opcontrol() {
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	pros::Task shoot(shootThread);
 	pros::Task s(stringsAndResetThread);
 
 	while (true) {

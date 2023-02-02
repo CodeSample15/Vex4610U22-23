@@ -22,5 +22,4 @@ pros::Imu gyro2 = pros::Imu(INERTIAL2_PORT);
 pros::Optical optical = pros::Optical(OPTICAL_PORT);
 pros::Optical speedIndicator = pros::Optical(INDICATOR_OPTICAL_PORT);
 
-pros::ADIDigitalOut Indexer = pros::ADIDigitalOut(INDEXER_PORT);
 pros::ADIDigitalOut Strings = pros::ADIDigitalOut(STRINGS_PORT);

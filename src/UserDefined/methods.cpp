@@ -51,8 +51,6 @@ pros::Task f_thread(flyWheelThread);
 
 void init()
 {
-  indexerBack();
-
   autonStarted = false;
   flyWheelSpeed = 0;
 
@@ -75,11 +73,6 @@ void init()
     pros::delay(50);
   gyro.tare();
   gyro2.tare();
-}
-
-void reset()
-{
-  indexerBack();
 }
 
 void reset_position() {
@@ -280,39 +273,17 @@ bool flyRecovering()
   return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 5; //return whether the flywheel is within 10 rpm of the desired amount
 }
 
-void indexerBack()
+void shoot()
 {
-  Indexer.set_value(false);
-}
+  //for auton, wait until the flywheel has recovered before continuing
+  while(flyRecovering())
+    pros::delay(10);
 
-void indexerForward() 
-{
-  Indexer.set_value(true);
-}
-
-
-void shoot(bool driving)
-{
-  if(driving) {
-    //for driving, warn the driver that the fly wheel isn't ready by rumbling
-    indexerForward();
-    pros::delay(300);
-    indexerBack();
-  }
-  else {
-
-    //for auton, wait until the flywheel has recovered before continuing
-    while(flyRecovering())
-      pros::delay(10);
-
-    indexerForward();
+  IntakeOne.tare_position();
+  IntakeOne.move_relative(-100, 100);
     
-    while(flyRecovering())
-      pros::delay(10);
-
-    indexerBack();
-
-  }
+  while(flyRecovering())
+    pros::delay(10);
 }
 
 void spinRollerToColor(char col) {
