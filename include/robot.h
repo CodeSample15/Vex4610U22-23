@@ -1,20 +1,20 @@
 #include "api.h"
 
-#define RIGHT_FRONT_PORT 9
-#define RIGHT_BACK_PORT 10
-#define LEFT_FRONT_PORT 5
-#define LEFT_BACK_PORT 8
+#define RIGHT_FRONT_PORT 7
+#define RIGHT_BACK_PORT 11
+#define LEFT_FRONT_PORT 16
+#define LEFT_BACK_PORT 17
 
-#define ROLLER_PORT 12
+#define ROLLER_PORT 1
 
-#define INTAKE_ONE_PORT 11
+#define INTAKE_ONE_PORT 2
 
-#define FLYWHEEL_PORT 7
+#define FLYWHEEL_PORT 3
 
-#define INERTIAL1_PORT 18
-#define INERTIAL2_PORT 19
+#define INERTIAL1_PORT 4
+#define INERTIAL2_PORT 8
 
-#define OPTICAL_PORT 4
+#define OPTICAL_PORT 5
 #define INDICATOR_OPTICAL_PORT 12
 
 #define STRINGS_PORT 'B'

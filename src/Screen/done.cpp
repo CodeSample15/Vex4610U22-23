@@ -17,7 +17,10 @@ void doneScreen() //thread that runs until completion of the auton
         lv_obj_clean(lv_scr_act());
 
         if(selectedAuton == -1)
-            status = makeLabel(lv_scr_act(), 0, 0, 100, 50, "No Auton", &text_red_style);
+            if(RunningSkills)
+                status = makeLabel(lv_scr_act(), 0, 0, 100, 50, "Skills Ready", &text_green_style);
+            else
+                status = makeLabel(lv_scr_act(), 0, 0, 100, 50, "No Auton", &text_red_style);
         else if(gyro2.is_calibrating() || gyro.is_calibrating())
             status = makeLabel(lv_scr_act(), 0, 0, 100, 50, "Auton selected (Calibrating...)", &text_blue_style);
         else

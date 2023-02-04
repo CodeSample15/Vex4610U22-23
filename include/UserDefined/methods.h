@@ -39,6 +39,9 @@ double getRegularRotation(); //between -360 and 360
 void reset_position();
 double get_avr_pos(); //get the average position between the four drive motors
 
+void set_drive_raw(int left, int right);
+void stop_drive();
+
 void hardDriveStop();
 void Move(int amount, int speed, bool hardstop);
 void Move(PID& pid, int amount, double speed);

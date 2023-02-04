@@ -43,6 +43,8 @@ void controller_display()
 	controller.clear();
 
 	while(true) {
+		controller.set_text(0,0,"Movement: " + std::to_string(get_avr_pos()));
+		pros::delay(60);
 		controller.set_text(1,0,"Rot: " + std::to_string(gyro.get_rotation()));
 		pros::delay(60);
 		controller.set_text(2, 0, "Flywheel temp: " + std::to_string((int)FlyWheel.get_temperature()));
@@ -180,18 +182,17 @@ void opcontrol() {
 
 		//driving the intake
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_L1) == 1) {
-			IntakeOne.move(127);
+			IntakeOne.move(-127);
 		}
 		else if(controller.get_digital(E_CONTROLLER_DIGITAL_L2) == 1) {
-			IntakeOne.move(-127);
+			IntakeOne.move(127);
 		}
 		else {
 			IntakeOne.brake();
 		}
 
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-			FlyWheel.move_velocity(440);
-			flyWheelSpeed = 440;
+			FlyWheel.move_velocity(600);
 		}
 		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
 			spinDown();
@@ -199,6 +200,8 @@ void opcontrol() {
 
 
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_R2))
+			Roller.move_velocity(100);
+		else if(controller.get_digital(E_CONTROLLER_DIGITAL_R1))
 			Roller.move_velocity(100);
 		else
 			Roller.brake();

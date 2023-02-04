@@ -80,7 +80,7 @@ double PID::calculate(int currentPoint, int endPoint)
   if(PID::_integral > PID::_MaxI)
     PID::_integral = PID::_MaxI;
 
-  double Iout = PID::_integral * PID::_Ki;
+  double Iout = PID::_integral * PID::_Ki * (PID::error > 0 ? 1 : -1);
 
   //D
   double derivative = (PID::error - PID::_pre_error) / PID::_dt;

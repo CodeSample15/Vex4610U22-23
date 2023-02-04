@@ -16,9 +16,9 @@
 AutonManager a_manager = AutonManager();
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.5, 0.03, 0.25, 40, 20, 10);
-PID movePid = PID(0.5, 0.00, 0.25, 20);
-PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 20, 127);
+PID turnPid = PID(1.3, 0.01, 0.1, 20, 25, 4);
+PID movePid = PID(0.2, 0.03, 0.3, 20, 30, 6);
+PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 0, 127);
 
 char TEAM_COLOR = 'r';
 
@@ -46,8 +46,7 @@ void flyWheelThread()
   }
 }
 
-pros::Task f_thread(flyWheelThread);
-
+//pros::Task f_thread(flyWheelThread);
 
 void init()
 {
@@ -123,6 +122,22 @@ double getRegularRotation()
 }
 
 
+void set_drive_raw(int left, int right) 
+{
+  RightBack.move(right);
+  RightFront.move(right);
+  LeftBack.move(left);
+  LeftBack.move(left);
+}
+
+void stop_drive()
+{
+  RightBack.brake();
+  RightFront.brake();
+  LeftBack.brake();
+  LeftFront.brake();
+}
+
 //movement stuff (all of the drivetrain stuff will run with motor.move)
 void hardDriveStop() 
 {
@@ -181,7 +196,7 @@ void Move(PID& pid, int amount, double s)
   double speed = 0;
 
   do {
-    speed = pid.calculate(std::abs(get_avr_pos()), amount);
+    speed = pid.calculate(get_avr_pos(), amount);
     speed *= s;
 
     speed += (speed>0 ? 3 : -3); //add a minimum of 3 to the total voltage to prevent bot from getting stuck
@@ -190,7 +205,7 @@ void Move(PID& pid, int amount, double s)
     RightBack.move(speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
-  } while(std::abs(pid.error) > 2);
+  } while(std::abs(pid.error) > 10);
 
   hardDriveStop();
 }
@@ -214,7 +229,7 @@ void Move(PID& pid, PID& turnPID, int amount, double s)
     LeftBack.move(speed + turnAmount);
 
     pros::delay(10);
-  } while(std::abs(pid.error) > 2 || std::abs(turnPID.error) > 3);
+  } while(std::abs(pid.error) > 10 || std::abs(turnPID.error) > 10);
 
   hardDriveStop();
 }
@@ -266,6 +281,7 @@ void spinUp()
 void spinDown()
 {
   flyWheelSpeed = 0;
+  FlyWheel.brake();
 }
 
 bool flyRecovering()
