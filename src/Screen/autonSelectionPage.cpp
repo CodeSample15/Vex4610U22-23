@@ -121,6 +121,7 @@ void a_select(int selected)
     lv_obj_set_height(page, 150);
 
     //filling the page with autons that can run from the bot's current location
+    int counter = 0;
     for(int i=0; i<a_manager.numAutons(); i++) {
         bool p[5];
         a_manager.getPositions(i, p);
@@ -130,10 +131,12 @@ void a_select(int selected)
             lv_obj_t * but;
 
             if(i == selected)
-                but = makeButton(i, page, 0, ((b_height+10) * i), b_width, b_height, a_manager.getName(i).c_str(), &redButtonREL, &redButtonPRES);
+                but = makeButton(i, page, 0, ((b_height+10) * counter), b_width, b_height, a_manager.getName(i).c_str(), &redButtonREL, &redButtonPRES);
             else
-                but = makeButton(i, page, 0, ((b_height+10) * i), b_width, b_height, a_manager.getName(i).c_str(), &blueButtonREL, &blueButtonPRES);
+                but = makeButton(i, page, 0, ((b_height+10) * counter), b_width, b_height, a_manager.getName(i).c_str(), &blueButtonREL, &blueButtonPRES);
             lv_btn_set_action(but, LV_BTN_ACTION_CLICK, btn_click_action);
+
+            counter++;
         }
     }
 }

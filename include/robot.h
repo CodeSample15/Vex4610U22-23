@@ -17,7 +17,7 @@
 #define OPTICAL_PORT 5
 #define INDICATOR_OPTICAL_PORT 12
 
-#define STRINGS_PORT 'B'
+#define STRINGS_PORT 'A'
 
 
 extern pros::Controller controller;

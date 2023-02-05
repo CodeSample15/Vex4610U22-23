@@ -1,7 +1,8 @@
 #pragma once
 #include "UserDefined/methods.h"
-#include "robot.h"
 #include "UserDefined/AutonManager.h"
+#include "Screen/firstPage.hpp"
+#include "robot.h"
 
 void load_autons(AutonManager& manager);
 
@@ -12,11 +13,11 @@ inline void empty() {
 //add autons here
 inline void roll()
 {
-    set_drive_raw(-70, -70);
+    set_drive_raw(-170, -170);
 
     Roller.move_velocity(100);
 
-    pros::delay(400);
+    pros::delay(500);
 
     Roller.brake();
 
@@ -25,28 +26,54 @@ inline void roll()
     Move(movePid, 500, 1);
 }
 
+inline void roll_and_shoot() 
+{
+    spinUp();
+    roll();
+    Turn(turnPid, 90, 1);
+    IntakeOne.move(127);
+}
+
+inline void shoot_low() {
+    spinUp();
+    Move(movePid, 500, 1);
+
+    if(start_pos == ONE || start_pos==TWO || start_pos==THREE) {
+        Turn(turnPid, 100, 1); //shoot into net to score low goal
+    }
+    else {
+        Turn(turnPid, -100, 1);
+    }
+
+    IntakeOne.move(127);
+}
+
+
 inline void skills() {
+    gyro.tare();
+
     //roll first roller
-    set_drive_raw(-70, -70);
+    set_drive_raw(-170, -170);
 
-    Roller.move_velocity(-100);
+    Roller.move_velocity(50);
 
-    pros::delay(300);
+    pros::delay(700);
 
     Roller.brake();
 
     stop_drive();
 
+    //move away from first roller
     Move(movePid, 1500, 1);
 
     //turn to second roller
     Turn(turnPid, 90, 1);
 
     //move back to second roller
-    Move(movePid, turnPid, -1500, 1);
+    Move(movePid, turnPid, -1700, 1);
 
     //move the rest of the way using raw values for the motors
-    set_drive_raw(-70, -70);
+    set_drive_raw(-190, -190);
 
     //turn the thing
     Roller.move_velocity(-50);
@@ -58,6 +85,12 @@ inline void skills() {
 
     //move forward away from the wall
     Move(movePid, 1000, 1);
+
+    Turn(turnPid, -30, 1);
+    pros::delay(500);
+
+    //launch strings
+    Strings.set_value(1);
 }
 
 inline void load_autons(AutonManager& manager) 
@@ -72,4 +105,6 @@ inline void load_autons(AutonManager& manager)
 
     manager.addAuton(&empty, "No Auton", "Run when all is lost", true, true, true, true, true);
     manager.addAuton(&roll, "Roll", "Spin roller to color and move forward.", true, false, false, false, false);
+    manager.addAuton(&roll_and_shoot, "Roll&Shoot", "Spin roller, spin to low goal and shoot", true, false, false, false, false);
+    manager.addAuton(&shoot_low, "Shoot low", "Turn to low goal from any position and shoot.", true, true, true, true, true);
 }

@@ -50,6 +50,7 @@ void Move(PID& pid, PID& turnPID, int amount, double speed); //move function, bu
 
 void Turn(PID& turnPid, int amount, double speed);
 void Turn(PID& turnPid, int amount, double speed, bool (*active)()); //with a lambda to break out of the turn if a condition is met (for autonomous turning during driver control)
+void TurnTo(PID& turnPid, int rotation, double speed);
 
 void spinRollerToColor(char col);
 

@@ -16,7 +16,7 @@
 AutonManager a_manager = AutonManager();
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.3, 0.01, 0.1, 20, 25, 4);
+PID turnPid = PID(1.3, 0, 0.1, 20, 25, 4);
 PID movePid = PID(0.2, 0.03, 0.3, 20, 30, 6);
 PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 0, 127);
 
@@ -72,6 +72,10 @@ void init()
     pros::delay(50);
   gyro.tare();
   gyro2.tare();
+
+  if(start_pos == FOUR || start_pos == FIVE) {
+    gyro.set_rotation(-90);
+  }
 }
 
 void reset_position() {
@@ -205,7 +209,7 @@ void Move(PID& pid, int amount, double s)
     RightBack.move(speed);
     LeftFront.move(speed);
     LeftBack.move(speed);
-  } while(std::abs(pid.error) > 10);
+  } while(std::abs(pid.error) > 15);
 
   hardDriveStop();
 }
@@ -228,8 +232,8 @@ void Move(PID& pid, PID& turnPID, int amount, double s)
     LeftFront.move(speed + turnAmount);
     LeftBack.move(speed + turnAmount);
 
-    pros::delay(10);
-  } while(std::abs(pid.error) > 10 || std::abs(turnPID.error) > 10);
+    pros::delay(5);
+  } while(std::abs(pid.error) > 15 || std::abs(turnPID.error) > 10);
 
   hardDriveStop();
 }
@@ -268,6 +272,13 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
   hardDriveStop();
 }
 
+void TurnTo(PID& turnPid, int rotation, double speed) 
+{
+  double rot = rotation - getRegularRotation();
+
+  Turn(turnPid, rot, speed);
+}
+
 void spinPrep()
 {
   flyWheelSpeed = 300;
@@ -275,7 +286,8 @@ void spinPrep()
 
 void spinUp()
 {
-  flyWheelSpeed = 500;
+  FlyWheel.move_velocity(400);
+  flyWheelSpeed = 400;
 }
 
 void spinDown()

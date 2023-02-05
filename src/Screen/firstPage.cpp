@@ -71,7 +71,7 @@ void firstPage()
     lv_obj_t * goalInd2 = makeLabel(lv_scr_act(), 0, 0, 10, 10, "Goal", &text_blue_style);
     lv_obj_align(goalInd2, NULL, LV_ALIGN_IN_TOP_RIGHT, -25, 25);
 
-    lv_obj_t * skillsButton = makeButton(0, lv_scr_act(), 230, 25, buttonWidth, buttonHeight, "Skills", &blueButtonREL, &blueButtonPRES);
+    lv_obj_t * skillsButton = makeButton(0, lv_scr_act(), 230, 75, buttonWidth, buttonHeight, "Skills", &blueButtonREL, &blueButtonPRES);
 
     lv_btn_set_action(skillsButton, LV_BTN_ACTION_CLICK, skills_btn_action);
 

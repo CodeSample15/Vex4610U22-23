@@ -1,9 +1,6 @@
 /*
 	Current problems:
-		- Preloads auton doesn't work (PID is acting funky)
-		- Move function is non functional (might be fixed)
-		- Reset button doesn't work as intented
-		- Position tracking might be out of wack again
+		* Turn PID is getting messed up with integral
 */
 
 #include <string>
@@ -28,7 +25,8 @@ void display()
 	std::cout << "Running display thread" << std::endl;
 
 	while(true) {
-		lcd::set_text(2, "Rotation: " + std::to_string(gyro.get_rotation()));
+		lcd::set_text(1, "Rotation 1: " + std::to_string(gyro.get_rotation()));
+		lcd::set_text(2, "Rotation 2: " + std::to_string(gyro2.get_rotation()));
 		lcd::set_text(3, "Blue: " + std::to_string(optical.get_rgb().blue));
 		lcd::set_text(4, "Red: " + std::to_string(optical.get_rgb().red));
 
@@ -87,7 +85,7 @@ void autonomous()
 	Since the two buttons are most likely never going to be pressed at the same time (because why would they ever), I've placed the functions into the same thread.
 	Is this bad practice? Maybe. But I don't care.
 */
-void stringsAndResetThread() {
+void stringsThread() {
 	int count = 0; //excuse the bad naming, but they both do the same thing, just for seperate buttons
 	int otherCount = 0;
 
@@ -116,19 +114,19 @@ void opcontrol() {
 
 		Forward/Backward:              Left analog stick
 		Right/Left:                    Right analog stick
-		Auto aim:                      A
 		Shoot:                         L2 (Outtake)
 		Retract piston:                Down arrow
 		Intake/Outtake:                L1/L2
-		Flywheel to constant speed:    X
-		Flywheel off:                  B
-		Flywheel automatic modeL       Y
+		Flywheel on:                   A
+		Flywheel off:                  Y
+		Inrease flywheel speed:        X
+		Decrease flywheel speed:       B
 		Spin Roller:                   R2
 		Expand (strings):              Up arrow (hold)
-		Reset position:                Left arrow (hold)
 
 	    Open button(s):
 			* Right arrow
+			* Left arrow
 	*/
 
 
@@ -155,7 +153,10 @@ void opcontrol() {
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	pros::Task s(stringsAndResetThread);
+	int adjustableFlywheelSpeed = 400;
+	bool flyWheelOn = false;
+
+	pros::Task s(stringsThread);
 
 	while (true) {
 		//regular drive code
@@ -191,18 +192,26 @@ void opcontrol() {
 			IntakeOne.brake();
 		}
 
-		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-			FlyWheel.move_velocity(600);
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+			adjustableFlywheelSpeed += 50;
+		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
+			adjustableFlywheelSpeed -= 50;
+
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+			flyWheelOn = true;
 		}
-		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+		else if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_Y)) {
+			flyWheelOn = false;
 			spinDown();
 		}
 
+		if(flyWheelOn)
+			FlyWheel.move_velocity(adjustableFlywheelSpeed);
 
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_R2))
 			Roller.move_velocity(100);
 		else if(controller.get_digital(E_CONTROLLER_DIGITAL_R1))
-			Roller.move_velocity(100);
+			Roller.move_velocity(-100);
 		else
 			Roller.brake();
 
