@@ -153,7 +153,7 @@ void opcontrol() {
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	int adjustableFlywheelSpeed = 400;
+	int adjustableFlywheelSpeed = 300;
 	bool flyWheelOn = false;
 
 	pros::Task s(stringsThread);

@@ -1,11 +1,11 @@
 #include "api.h"
 
-#define RIGHT_FRONT_PORT 7
-#define RIGHT_BACK_PORT 11
+#define RIGHT_FRONT_PORT 1
+#define RIGHT_BACK_PORT 7
 #define LEFT_FRONT_PORT 16
 #define LEFT_BACK_PORT 17
 
-#define ROLLER_PORT 1
+#define ROLLER_PORT 20
 
 #define INTAKE_ONE_PORT 2
 

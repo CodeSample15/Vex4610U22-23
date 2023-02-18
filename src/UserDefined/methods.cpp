@@ -29,6 +29,13 @@ int flyWheelSpeed;
 
 bool RunningSkills = false;
 
+//for multithreading methods
+bool processFinished = false; //for multithreading methods
+PID* pidTemp;
+PID* turnPIDTemp;
+int amountTemp;
+double speedTemp;
+
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void flyWheelThread()
@@ -233,9 +240,42 @@ void Move(PID& pid, PID& turnPID, int amount, double s)
     LeftBack.move(speed + turnAmount);
 
     pros::delay(5);
-  } while(std::abs(pid.error) > 15 || std::abs(turnPID.error) > 10);
+  } while((std::abs(pid.error) > 15 || std::abs(turnPID.error) > 10) && !stopThreads);
 
   hardDriveStop();
+}
+
+void MoveWithTempValues()
+{
+  processFinished = false;
+  Move(*pidTemp, *turnPIDTemp, amountTemp, speedTemp);
+  processFinished = true;
+}
+
+void Move(PID& pid, PID& turnPID, int amount, double speed, float killTime) 
+{
+  pidTemp = &pid;
+  turnPIDTemp = &turnPID;
+  amountTemp = amount;
+  speedTemp = speed;
+
+  stopThreads = false;
+  pros::Task driveThread(MoveWithTempValues);
+
+  float elapsed = 0;
+
+  while(elapsed < killTime) {
+    pros::delay(20);
+    elapsed += 0.02;
+
+    if(processFinished)
+      break;
+  }
+
+  if(elapsed >= killTime) {
+    stopThreads = true; //kill the thread (?)
+    pros::delay(100);
+  }
 }
 
 void Turn(PID& turnPid, int amount, double speed) 

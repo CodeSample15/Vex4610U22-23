@@ -50,6 +50,8 @@ inline void shoot_low() {
 
 
 inline void skills() {
+    Move(movePid, turnPid, 1000, 1, 2);
+    /*
     gyro.tare();
 
     //roll first roller
@@ -91,6 +93,7 @@ inline void skills() {
 
     //launch strings
     Strings.set_value(1);
+    */
 }
 
 inline void load_autons(AutonManager& manager) 

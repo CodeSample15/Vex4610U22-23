@@ -46,6 +46,7 @@ void hardDriveStop();
 void Move(int amount, int speed, bool hardstop);
 void Move(PID& pid, int amount, double speed);
 void Move(PID& pid, PID& turnPID, int amount, double speed); //move function, but with rotation locking as well
+void Move(PID& pid, PID& turnPID, int amount, double speed, float killTime);
 //void MoveUntilLine(int speed); (maybe)
 
 void Turn(PID& turnPid, int amount, double speed);
