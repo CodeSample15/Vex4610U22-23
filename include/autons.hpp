@@ -50,7 +50,50 @@ inline void shoot_low() {
 
 
 inline void skills() {
-    Move(movePid, turnPid, 1000, 1, 2);
+    gyro.tare();
+
+    set_drive_raw(-170, 0);
+    Roller.move_velocity(100);
+    pros::delay(450);
+    Roller.brake(); //roll
+    stop_drive();
+
+    Move(movePid, 500, 1);
+    Turn(turnPid, -90, 1);
+    Move(movePid, 500, 1); //hopefully at 2nd roller
+
+    //set_drive_raw(-170, -170);
+    //Roller.move_velocity(100);
+    //pros::delay(500);
+    //pRoller.brake(); //roll
+    /*
+    Move(movePid, -10, 1);
+    Turn(turnPid, 90, 1);
+    Move(movePid, 2000, 1); //go through low goal
+
+    Turn(turnPid, 90, 1);
+    Move(movePid, 2000, 1); //hopefully at roller
+
+    Turn(turnPid, -90, 1);
+
+    set_drive_raw(-170, -170);
+    Roller.move_velocity(100);
+    pros::delay(500);
+    Roller.brake(); //roll
+
+    Move(movePid, -10, 1);
+    Turn(turnPid, -90, 1);
+    Move(movePid, 500, 1); //hopefully at 2nd roller
+
+    set_drive_raw(-170, -170);
+    Roller.move_velocity(100);
+    pros::delay(500);
+    Roller.brake(); //roll
+
+    Move(movePid, -200, 1); //cover tiles
+    Turn(turnPid, -135, 1);
+    //Strings.set_value(1);
+    */
     /*
     gyro.tare();
 
