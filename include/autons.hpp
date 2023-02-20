@@ -50,50 +50,70 @@ inline void shoot_low() {
 
 
 inline void skills() {
-    gyro.tare();
+    //spin up flywheel
 
-    set_drive_raw(-170, 0);
-    Roller.move_velocity(100);
-    pros::delay(450);
-    Roller.brake(); //roll
-    stop_drive();
+    //get first roller
 
-    Move(movePid, 500, 1);
-    Turn(turnPid, -90, 1);
-    Move(movePid, 500, 1); //hopefully at 2nd roller
+    //turn towards nearest disk
 
-    //set_drive_raw(-170, -170);
-    //Roller.move_velocity(100);
-    //pros::delay(500);
-    //pRoller.brake(); //roll
-    /*
-    Move(movePid, -10, 1);
-    Turn(turnPid, 90, 1);
-    Move(movePid, 2000, 1); //go through low goal
+    //intake disk
 
-    Turn(turnPid, 90, 1);
-    Move(movePid, 2000, 1); //hopefully at roller
+    //turn towards next roller
 
-    Turn(turnPid, -90, 1);
+    //get second roller
 
-    set_drive_raw(-170, -170);
-    Roller.move_velocity(100);
-    pros::delay(500);
-    Roller.brake(); //roll
+    //turn towards high goal
 
-    Move(movePid, -10, 1);
-    Turn(turnPid, -90, 1);
-    Move(movePid, 500, 1); //hopefully at 2nd roller
+    //shoot single disk
 
-    set_drive_raw(-170, -170);
-    Roller.move_velocity(100);
-    pros::delay(500);
-    Roller.brake(); //roll
+    //move forward
 
-    Move(movePid, -200, 1); //cover tiles
-    Turn(turnPid, -135, 1);
-    //Strings.set_value(1);
-    */
+    //turn towards row of 3 disks
+
+    //gather first three disks
+
+    //turn towards high goal
+
+    //shoot
+
+    //turn 180 degrees
+
+    //move to other side of 3 disks
+
+    //turn and gather next 3 disks
+
+    //turn to high goal and shoot
+
+    //move to the next roller
+
+    //turn and roll the third roller
+
+    //move away from the roller and turn to the nearest disk
+
+    //gather the disk and shoot into high goal
+
+    //move and turn to next roller
+
+    //spin fourth roller
+
+    //move to diagonal
+
+    //gather and shoot 3 stack
+
+    //turn and continue to the next set of disks
+
+    //shoot next 3 disks
+
+    //continue to last 3 stack
+
+    //gather and score 3 stack into high goals
+
+    //move along diagonal a little more
+
+    //turn so that strings point into the field
+
+    //expand
+
     /*
     gyro.tare();
 
