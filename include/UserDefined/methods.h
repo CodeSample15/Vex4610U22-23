@@ -1,7 +1,6 @@
 /*
   * Author: Luke Crimi
   * Date created: 9/4/2022
-  * Project: PositionTracking
   * This holds all of the functions and variables used by the main script
 */
 
