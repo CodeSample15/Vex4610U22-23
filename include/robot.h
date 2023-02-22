@@ -8,6 +8,7 @@
 #define ROLLER_PORT 20
 
 #define INTAKE_ONE_PORT 2
+#define INTAKE_TWO_PORT 11
 
 #define FLYWHEEL_PORT 3
 
@@ -31,6 +32,7 @@ extern pros::Motor LeftBack;
 extern pros::Motor Roller;
 
 extern pros::Motor IntakeOne;
+extern pros::Motor IntakeTwo;
 
 extern pros::Motor FlyWheel;
 
