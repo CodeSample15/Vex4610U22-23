@@ -184,12 +184,15 @@ void opcontrol() {
 		//driving the intake
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_L1) == 1) {
 			IntakeOne.move(-127);
+			IntakeTwo.move(-127);
 		}
 		else if(controller.get_digital(E_CONTROLLER_DIGITAL_L2) == 1) {
 			IntakeOne.move(127);
+			IntakeTwo.move(127);
 		}
 		else {
 			IntakeOne.brake();
+			IntakeTwo.brake();
 		}
 
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
