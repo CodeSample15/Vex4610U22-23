@@ -12,6 +12,7 @@ pros::Motor LeftBack = pros::Motor(LEFT_BACK_PORT, true);
 pros::Motor Roller = pros::Motor(ROLLER_PORT, true);
 
 pros::Motor IntakeOne = pros::Motor(INTAKE_ONE_PORT);
+pros::Motor IntakeTwo = pros::Motor(INTAKE_TWO_PORT);
 
 pros::Motor FlyWheel = pros::Motor(FLYWHEEL_PORT, pros::E_MOTOR_GEAR_600, true); //600 rpm cuz that's the highest and we don't have a gearbox
 
