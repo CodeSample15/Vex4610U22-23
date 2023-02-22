@@ -66,17 +66,17 @@ inline void skills() {
 
     //turn towards nearest disk
     //we get 2 preloads so just intake one
-    Move(movePID, 100, 1);
-    Turn(turnPID, -90, 1) //aiming for 2nd diagonal disc
+    Move(movePid, 100, 1);
+    Turn(turnPid, -90, 1); //aiming for 2nd diagonal disc
     
     //intake disk
     IntakeOne.move(-127);
 	IntakeTwo.move(-127);
-    Move(movePID, 300, 1);
+    Move(movePid, 300, 1);
 
     //turn towards next roller
-    Turn(turnPID, -180, 1);
-    Move(turnPID, -300, 1);
+    Turn(turnPid, -180, 1);
+    Move(turnPid, -300, 1);
     IntakeOne.brake(); //enough intaking
 	IntakeTwo.brake();
 
@@ -88,8 +88,8 @@ inline void skills() {
     stop_drive();
 
     //turn towards high goal
-    Move(movePID, 100, 1);
-    Turn(turnPID, 180, 1);
+    Move(movePid, 100, 1);
+    Turn(turnPid, 180, 1);
 
     //shoot single disk
     for(int i=0; i<3; i++){ // maybe move forward towards goal if discs are not shooting far enough
@@ -107,15 +107,15 @@ inline void skills() {
     //Not too sure what I'm supposed to do here
     //I am picking up 3 discs, shooting, going to the other half of the field, picking up, shooting
     //In an "S" pattern to score 3 in red high goal and 3 in blue high goal
-    Turn(turnPID, -45, 1);
+    Turn(turnPid, -45, 1);
 
     //gather first three disks
     IntakeOne.move(-127);
 	IntakeTwo.move(-127);
-    Move(movePID, 1000, 1);
+    Move(movePid, 1000, 1);
 
     //turn towards high goal
-    Turn(turnPID, -90, 1);
+    Turn(turnPid, -90, 1);
     IntakeOne.brake();
 	IntakeTwo.brake();
 
@@ -130,19 +130,19 @@ inline void skills() {
     }
 
     //turn 180 degrees
-    Turn(turnPID, 180, 1);
+    Turn(turnPid, 180, 1);
 
     //move to other side of 3 disks
     IntakeOne.move(-127);
 	IntakeTwo.move(-127);
-    Move(movePID, 500, 1);
+    Move(movePid, 500, 1);
 
     //turn and gather next 3 disks
-    Turn(turnPID, -90, 1);
-    Move(movePID, 500, 1);
+    Turn(turnPid, -90, 1);
+    Move(movePid, 500, 1);
 
     //turn to high goal and shoot
-    Turn(turnPID, 120, 1); //weird angle so this might not be right
+    Turn(turnPid, 120, 1); //weird angle so this might not be right
     for(int i=0; i<3; i++){
         IntakeOne.move(127);
 	    IntakeTwo.move(127);
@@ -153,15 +153,15 @@ inline void skills() {
     }
 
     //move to the next roller
-    Turn(turnPID, -120, 1); //negative of weird angle
-    Move(movePID, 200, 1); //move a small bit to not disturb stack of 3
-    Turn(turnPID, -45, 1);
+    Turn(turnPid, -120, 1); //negative of weird angle
+    Move(movePid, 200, 1); //move a small bit to not disturb stack of 3
+    Turn(turnPid, -45, 1);
 
     IntakeOne.move(-127);
 	IntakeTwo.move(-127);
-    Move(movePID, 200, 1); //collect 2nd disc in diagonal and fire ASAP to prevent misfire
+    Move(movePid, 200, 1); //collect 2nd disc in diagonal and fire ASAP to prevent misfire
     pros::delay(500);
-    Turn(turnPID, 180, 1);
+    Turn(turnPid, 180, 1);
 
     IntakeOne.move(127);
 	IntakeTwo.move(127);
@@ -170,8 +170,8 @@ inline void skills() {
 	IntakeTwo.brake();
 
     //turn and roll the third roller
-    Turn(turnPID, 90, 1);
-    Move(movePID, 200, 1); //roller sticking out towards the corner
+    Turn(turnPid, 90, 1);
+    Move(movePid, 200, 1); //roller sticking out towards the corner
 
     set_drive_raw(-190, -50);
     Roller.move_velocity(50);
@@ -182,9 +182,9 @@ inline void skills() {
     //move away from the roller and turn to the nearest disk
     //gather the disk and shoot into high goal
     //move and turn to next roller
-    Move(movePID, 200, 1);
-    Turn(turnPID, -90, 1);
-    Move(movePID, -200, 1);
+    Move(movePid, 200, 1);
+    Turn(turnPid, -90, 1);
+    Move(movePid, -200, 1);
 
     //spin fourth roller
     set_drive_raw(-50, -190);
