@@ -19,6 +19,7 @@
 #define INDICATOR_OPTICAL_PORT 12
 
 #define STRINGS_PORT 'A'
+#define LINE_TRACKER_PORT 'B'
 
 
 extern pros::Controller controller;
@@ -43,3 +44,4 @@ extern pros::Optical optical;
 extern pros::Optical speedIndicator;
 
 extern pros::ADIDigitalOut Strings;
+extern pros::ADIAnalogIn lineTracker;

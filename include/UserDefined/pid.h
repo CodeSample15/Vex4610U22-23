@@ -3,6 +3,7 @@
 class PID {
   public:
     PID();
+    PID(double Kp, double Ki, double Kd, double dt, double IMax, double IMin, double MaxI, int IMult);
     PID(double Kp, double Ki, double Kd, double dt, double IMax, double IMin, double MaxI);
     PID(double Kp, double Ki, double Kd, double dt, double IMax, double IMin);
     PID(double Kp, double Ki, double Kd, double dt);
@@ -24,4 +25,5 @@ class PID {
     double _IMin;
     double _IMax;
     double _MaxI;
+    double _IMult;
 };

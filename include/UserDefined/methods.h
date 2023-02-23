@@ -46,13 +46,16 @@ void Move(int amount, int speed, bool hardstop);
 void Move(PID& pid, int amount, double speed);
 void Move(PID& pid, PID& turnPID, int amount, double speed); //move function, but with rotation locking as well
 void Move(PID& pid, PID& turnPID, int amount, double speed, float killTime);
-//void MoveUntilLine(int speed); (maybe)
+void MoveUntilLine(int speed);
 
 void Turn(PID& turnPid, int amount, double speed);
 void Turn(PID& turnPid, int amount, double speed, bool (*active)()); //with a lambda to break out of the turn if a condition is met (for autonomous turning during driver control)
 void TurnTo(PID& turnPid, int rotation, double speed);
 
 void spinRollerToColor(char col);
+void inTake();
+void outTake();
+void stopIntake();
 
 void spinPrep(); //warm the motors by building momentum in the fly wheel (faster to get to full speed)
 void spinUp(); //set the flywheel's speed according to the robot's position 

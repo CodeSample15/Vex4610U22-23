@@ -1,6 +1,6 @@
 /*
 	Current problems:
-		* Turn PID is getting messed up with integral
+		* Skills auton not finished
 */
 
 #include <string>
@@ -29,6 +29,7 @@ void display()
 		lcd::set_text(2, "Rotation 2: " + std::to_string(gyro2.get_rotation()));
 		lcd::set_text(3, "Blue: " + std::to_string(optical.get_rgb().blue));
 		lcd::set_text(4, "Red: " + std::to_string(optical.get_rgb().red));
+		lcd::set_text(5, "Line tracker value: " + std::to_string(lineTracker.get_value()));
 
 		pros::delay(20);
 

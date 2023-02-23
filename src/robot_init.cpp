@@ -24,3 +24,4 @@ pros::Optical optical = pros::Optical(OPTICAL_PORT);
 pros::Optical speedIndicator = pros::Optical(INDICATOR_OPTICAL_PORT);
 
 pros::ADIDigitalOut Strings = pros::ADIDigitalOut(STRINGS_PORT);
+pros::ADIAnalogIn lineTracker = pros::ADIAnalogIn(LINE_TRACKER_PORT);

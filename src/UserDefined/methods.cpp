@@ -16,8 +16,8 @@
 AutonManager a_manager = AutonManager();
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.3, 0, 0.1, 20, 25, 4);
-PID movePid = PID(0.2, 0.03, 0.3, 20, 30, 6);
+PID turnPid = PID(1.5, 0.01, 0.1, 20, 25, 4, 65, -1);
+PID movePid = PID(0.4, 0.03, 0.3, 20, 30, 4);
 PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 0, 127);
 
 char TEAM_COLOR = 'r';
@@ -278,6 +278,19 @@ void Move(PID& pid, PID& turnPID, int amount, double speed, float killTime)
   }
 }
 
+void MoveUntilLine(int speed) 
+{
+  RightFront.move_velocity(speed);
+  RightBack.move_velocity(speed);
+  LeftBack.move_velocity(speed);
+  LeftFront.move_velocity(speed);
+
+  while(lineTracker.get_value() < 500) 
+    pros::delay(10);
+
+  hardDriveStop(); //stop the bot quickly by setting the motors to brake
+}
+
 void Turn(PID& turnPid, int amount, double speed) 
 {
   gyro2.tare_rotation();
@@ -339,6 +352,20 @@ void spinDown()
 bool flyRecovering()
 {
   return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 5; //return whether the flywheel is within 10 rpm of the desired amount
+}
+
+
+void inTake() {
+  IntakeOne.move(-127);
+  IntakeTwo.move(-127);
+}
+void outTake() {
+  IntakeOne.move(127);
+  IntakeTwo.move(127);
+}
+void stopIntake() {
+  IntakeOne.brake();
+  IntakeTwo.brake();
 }
 
 void shoot()
