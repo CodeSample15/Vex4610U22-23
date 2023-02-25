@@ -25,3 +25,4 @@ pros::Optical speedIndicator = pros::Optical(INDICATOR_OPTICAL_PORT);
 
 pros::ADIDigitalOut Strings = pros::ADIDigitalOut(STRINGS_PORT);
 pros::ADIAnalogIn lineTracker = pros::ADIAnalogIn(LINE_TRACKER_PORT);
+pros::ADIDigitalOut Adjuster = pros::ADIDigitalOut(ADJUSTER_PORT);
