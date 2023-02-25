@@ -124,6 +124,7 @@ void opcontrol() {
 		Decrease flywheel speed:       B
 		Spin Roller:                   R2
 		Expand (strings):              Up arrow (hold)
+		Adjust shooter angle:		   Right arrow
 
 	    Open button(s):
 			* Right arrow
@@ -157,6 +158,8 @@ void opcontrol() {
 	int adjustableFlywheelSpeed = 300;
 	bool flyWheelOn = false;
 
+	int adjusterCount = 0;
+
 	pros::Task s(stringsThread);
 
 	while (true) {
@@ -176,20 +179,20 @@ void opcontrol() {
 
 		rightSpeed = leftControllerY - (int)curvedTurn * 1.5;
 		leftSpeed = leftControllerY + (int)curvedTurn * 1.5;
-
+		
 		RightFront.move_velocity(rightSpeed);
 		RightBack.move_velocity(rightSpeed);
 		LeftFront.move_velocity(leftSpeed);
 		LeftBack.move_velocity(leftSpeed);
-
+		
 		//driving the intake
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_L1) == 1) {
 			IntakeOne.move(-127);
 			IntakeTwo.move(-127);
 		}
 		else if(controller.get_digital(E_CONTROLLER_DIGITAL_L2) == 1) {
-			IntakeOne.move(127);
-			IntakeTwo.move(127);
+			IntakeOne.move(90);
+			IntakeTwo.move(90);
 		}
 		else {
 			IntakeOne.brake();
@@ -224,6 +227,16 @@ void opcontrol() {
 			optical.set_led_pwm(100);
 		else
 			optical.set_led_pwm(0);
+
+		//angle adjuster
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT)){
+			if(adjusterCount%2==1)
+				Adjuster.set_value(0);
+			else
+				Adjuster.set_value(1);
+			adjusterCount++;
+		}
+
 
 		pros::delay(20);
 	}
