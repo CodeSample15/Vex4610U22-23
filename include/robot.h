@@ -20,7 +20,7 @@
 
 #define STRINGS_PORT 'A'
 #define LINE_TRACKER_PORT 'B'
-
+#define ADJUSTER_PORT 'C'
 
 extern pros::Controller controller;
 
@@ -45,3 +45,4 @@ extern pros::Optical speedIndicator;
 
 extern pros::ADIDigitalOut Strings;
 extern pros::ADIAnalogIn lineTracker;
+extern pros::ADIDigitalOut Adjuster;
