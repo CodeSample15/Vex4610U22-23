@@ -125,6 +125,7 @@ void opcontrol() {
 		Spin Roller:                   R2
 		Expand (strings):              Up arrow (hold)
 		Adjust shooter angle:		   Right arrow
+		Reset flywheel power: 		   Left arrow
 
 	    Open button(s):
 			* Right arrow
@@ -155,7 +156,7 @@ void opcontrol() {
 	LeftFront.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	LeftBack.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
-	int adjustableFlywheelSpeed = 300;
+	int adjustableFlywheelSpeed = 350;
 	bool flyWheelOn = false;
 
 	int adjusterCount = 0;
@@ -237,6 +238,9 @@ void opcontrol() {
 			adjusterCount++;
 		}
 
+		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)){
+			adjustableFlywheelSpeed=350;
+		}
 
 		pros::delay(20);
 	}
