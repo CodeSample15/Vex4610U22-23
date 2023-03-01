@@ -63,7 +63,7 @@ inline void skills() {
     Move(movePid, 500, 1);
     Turn(turnPid, -60, 1);
 
-    FlyWheel.move_velocity(600); //spin up flywheel
+    FlyWheel.move_velocity(550); //spin up flywheel
 
     //turn on intake and drive
     inTake();
@@ -73,8 +73,8 @@ inline void skills() {
     Turn(turnPid, 150, 1);
 
     //back up and spin roller
-    Move(movePid, turnPid, -880, 0.5, 4);
-    set_drive_raw(-90, -30);
+    Move(movePid, turnPid, -820, 0.5, 4);
+    set_drive_raw(-90, -10);
     Roller.move_velocity(100);
     pros::delay(350);
     Roller.brake();
@@ -84,8 +84,9 @@ inline void skills() {
 
     //move away from roller and turn to shoot
     Move(movePid, 1000, 1);
-    TurnTo(turnPid, 5, 1.5);
-    
+    TurnTo(turnPid, 1.5, 1.3);
+
+
     //shoot
     outTake();
     pros::delay(3000);
@@ -93,26 +94,35 @@ inline void skills() {
 
     //move forward and turn to align with 3 rings
     Move(movePid, 1800, 1);
-    TurnTo(turnPid, 45, 2.5);
+    TurnTo(turnPid, 39, 2.5);
+    FlyWheel.move_velocity(325); //SPIN UP
 
     //drive and collect three rings
     inTake();
     Move(movePid, 3500, 1);
 
     //turn to high goal and shoot again
-    TurnTo(turnPid, -45, 1);
+    TurnTo(turnPid, -39, 1);
+    pros::delay(1000);
     outTake();
     pros::delay(3000);
 
     //turn 180 degrees and head to other three rings
-    Turn(turnPid, 180, 1.5);
-    Move(movePid, 3000, 0.7);
+    Turn(turnPid, 178, 1.5);
+    Move(movePid, 1000, 0.7);
 
+    TurnTo(turnPid, -39, 1);
+    inTake();
+    Move(movePid, 3500, 1);
+
+    TurnTo(turnPid, 39, 1);
+    outTake();
+    pros::delay(3000);
     /*
     //turn towards nearest disk
     //we get 2 preloads so just intake one
     Move(movePid, 100, 1);
-    Turn(turnPid, -90, 1); //aiming for 2nd diagonal disc
+    Turn(turnPid, -88, 1); //aiming for 2nd diagonal disc
     
     //intake disk
     IntakeOne.move(-127);
