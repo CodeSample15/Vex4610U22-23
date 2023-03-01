@@ -84,7 +84,7 @@ inline void skills() {
 
     //move away from roller and turn to shoot
     Move(movePid, 1000, 1);
-    TurnTo(turnPid, 1.5, 1.3);
+    TurnTo(turnPid, 1, 1.3);
 
 
     //shoot
