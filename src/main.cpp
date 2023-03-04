@@ -132,8 +132,6 @@ void opcontrol() {
 			*None
 	*/
 
-
-
 	if(!competing) {
 		//for driver testing
 		Task f(controller_display);

@@ -50,12 +50,43 @@ inline void shoot_low() {
     IntakeTwo.move(127);
 }
 
+inline void roll_and_shoot_high() 
+{
+    FlyWheel.move_velocity(350);
+
+    //while flywheel is spinning up, get roller
+    set_drive_raw(-170, -170);
+
+    Roller.move_velocity(100);
+
+    pros::delay(500);
+
+    Roller.brake();
+
+    stop_drive();
+
+    pros::delay(500);
+    curRot = gyro.get_rotation();
+
+    Move(movePid, turnPid, 300, 1);
+
+    TurnTo(turnPid, -5, 1);
+
+    outTake(); //high goal(?)
+
+    pros::delay(1000);
+
+    stopIntake();
+    pros::delay(1500); //wait for flywheel to spin up again
+
+    outTake(); //outtake for the rest of the match
+}
 
 inline void skills() {
     //get first roller
     pros::Task f_thread(flyWheelThread);
 
-    set_drive_raw(-90, -30); //roller sticks out on the right so drive more on the left
+    set_drive_raw(-170, -170); //roller sticks out on the right so drive more on the left
     Roller.move_velocity(100);
     pros::delay(350);
     Roller.brake();
@@ -81,7 +112,7 @@ inline void skills() {
 
     //back up and spin roller
     Move(movePid, turnPid, -1100, 0.6, 2.5);
-    set_drive_raw(-90, -50);
+    set_drive_raw(-170, -170);
     Roller.move_velocity(100);
     pros::delay(400);
     Roller.brake();
@@ -118,5 +149,6 @@ inline void load_autons(AutonManager& manager)
     manager.addAuton(&empty, "No Auton", "Run when all is lost", true, true, true, true, true);
     manager.addAuton(&roll, "Roll", "Spin roller to color and move forward.", true, false, false, false, false);
     manager.addAuton(&roll_and_shoot, "Roll&Shoot", "Spin roller, spin to low goal and shoot", true, false, false, false, false);
+    manager.addAuton(&roll_and_shoot_high, "Shoot high", "Get roller and score preloads in high goal (UNTESTED)", true, false, false, false, false);
     manager.addAuton(&shoot_low, "Shoot low", "Turn to low goal from any position and shoot.", true, true, true, true, true);
 }

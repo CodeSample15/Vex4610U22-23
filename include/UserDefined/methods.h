@@ -43,6 +43,7 @@ double get_avr_pos(); //get the average position between the four drive motors
 void flyWheelThread();
 
 void set_drive_raw(int left, int right);
+void set_drive_speed(int left, int right);
 void stop_drive();
 
 void hardDriveStop();

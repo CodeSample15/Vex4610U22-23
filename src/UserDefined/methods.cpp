@@ -16,7 +16,7 @@
 AutonManager a_manager = AutonManager();
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(2.3, 0, 0.3, 20, 25, 4, 65, -1);
+PID turnPid = PID(1.3, 0.01, 0.4, 5, 20, 1, 65, -1);
 PID movePid = PID(0.5, 0.03, 0.3, 20, 30, 4);
 PID flyWheelPid = PID(50000, 0, 0, 5, 300, 0, 127); //bang bang
 
@@ -73,10 +73,10 @@ void init()
 
   //calibrate imu
   gyro.reset();
-  gyro2.reset();
+  gyro2.reset(true);
 
   while(gyro.is_calibrating() || gyro2.is_calibrating())
-    pros::delay(50);
+    pros::delay(100);
   gyro.tare();
   gyro2.tare();
 
@@ -86,6 +86,8 @@ void init()
     gyro.set_rotation(-90);
     curRot = -90;
   }
+
+  stopThreads = false;
 }
 
 void reset_position() {
@@ -141,7 +143,14 @@ void set_drive_raw(int left, int right)
   RightBack.move(right);
   RightFront.move(right);
   LeftBack.move(left);
-  LeftBack.move(left);
+  LeftFront.move(left);
+}
+
+void set_drive_speed(int left, int right) {
+  RightBack.move_velocity(right);
+  RightFront.move_velocity(right);
+  LeftBack.move_velocity(left);
+  LeftFront.move_velocity(left);
 }
 
 void stop_drive()
@@ -243,7 +252,7 @@ void Move(PID& pid, PID& turnPID, int amount, double s)
     LeftBack.move(speed + turnAmount);
 
     pros::delay(5);
-  } while((std::abs(pid.error) > 15 || std::abs(turnPID.error) > 10) && !stopThreads);
+  } while((std::abs(pid.error) > 5 || std::abs(turnPID.error) > 5) && !stopThreads);
 
   hardDriveStop();
 }
@@ -306,7 +315,9 @@ void Turn(PID& turnPid, int amount, double speed)
     RightBack.move(-turnSpeed);
     LeftFront.move(turnSpeed);
     LeftBack.move(turnSpeed);
-  } while(std::abs(turnPid.error) > 1);
+
+    pros::delay(10);
+  } while(std::abs(turnPid.error) > 0);
 
   curRot += amount;
 
