@@ -73,6 +73,7 @@ void autonomous()
 		a_manager.runAuton(selectedAuton); //selectedAuton is from the autonSelectionPage files
 	}
 	else if(RunningSkills) {
+		autonStarted = true;
 		skills(); //in the autons.hpp file
 	}
 	else {
@@ -128,8 +129,7 @@ void opcontrol() {
 		Reset flywheel power: 		   Left arrow
 
 	    Open button(s):
-			* Right arrow
-			* Left arrow
+			*None
 	*/
 
 

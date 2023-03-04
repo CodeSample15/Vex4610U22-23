@@ -16,9 +16,9 @@
 AutonManager a_manager = AutonManager();
 
 //initializing the pid objects with their respective tunes
-PID turnPid = PID(1.5, 0.01, 0.1, 20, 25, 4, 65, -1);
-PID movePid = PID(0.4, 0.03, 0.3, 20, 30, 4);
-PID flyWheelPid = PID(0.43, 0.01, 0.15, 5, 300, 0, 127);
+PID turnPid = PID(2.3, 0, 0.3, 20, 25, 4, 65, -1);
+PID movePid = PID(0.5, 0.03, 0.3, 20, 30, 4);
+PID flyWheelPid = PID(50000, 0, 0, 5, 300, 0, 127); //bang bang
 
 char TEAM_COLOR = 'r';
 
@@ -36,6 +36,8 @@ PID* turnPIDTemp;
 int amountTemp;
 double speedTemp;
 
+int curRot;
+
 void set_pos(); //definition at the bottom of this file (sets starting position of the robot based off of what the user enters into the GUI)
 
 void flyWheelThread()
@@ -52,8 +54,6 @@ void flyWheelThread()
     FlyWheel.move(result);
   }
 }
-
-//pros::Task f_thread(flyWheelThread);
 
 void init()
 {
@@ -80,8 +80,11 @@ void init()
   gyro.tare();
   gyro2.tare();
 
+  curRot = 0;
+
   if(start_pos == FOUR || start_pos == FIVE) {
     gyro.set_rotation(-90);
+    curRot = -90;
   }
 }
 
@@ -285,10 +288,10 @@ void MoveUntilLine(int speed)
   LeftBack.move_velocity(speed);
   LeftFront.move_velocity(speed);
 
-  while(lineTracker.get_value() < 500) 
+  while(lineTracker.get_value() > 1000) 
     pros::delay(10);
 
-  hardDriveStop(); //stop the bot quickly by setting the motors to brake
+  hardDriveStop();
 }
 
 void Turn(PID& turnPid, int amount, double speed) 
@@ -303,7 +306,9 @@ void Turn(PID& turnPid, int amount, double speed)
     RightBack.move(-turnSpeed);
     LeftFront.move(turnSpeed);
     LeftBack.move(turnSpeed);
-  } while(std::abs(turnPid.error) > 5);
+  } while(std::abs(turnPid.error) > 1);
+
+  curRot += amount;
 
   hardDriveStop();
 }
@@ -322,14 +327,18 @@ void Turn(PID& turnPid, int amount, double speed, bool (*active)())
     LeftBack.move(turnSpeed);
   } while(std::abs(turnPid.error) > 5 && active());
 
+  curRot += amount;
+
   hardDriveStop();
 }
 
 void TurnTo(PID& turnPid, int rotation, double speed) 
 {
-  double rot = rotation - getRegularRotation();
+  double rot = rotation - curRot;
 
   Turn(turnPid, rot, speed);
+
+  curRot = rotation;
 }
 
 void spinPrep()
@@ -360,8 +369,8 @@ void inTake() {
   IntakeTwo.move(-127);
 }
 void outTake() {
-  IntakeOne.move(127);
-  IntakeTwo.move(127);
+  IntakeOne.move(90);
+  IntakeTwo.move(90);
 }
 void stopIntake() {
   IntakeOne.brake();

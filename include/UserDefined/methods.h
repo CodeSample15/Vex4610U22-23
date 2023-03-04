@@ -29,6 +29,8 @@ extern int flyWheelSpeed;
 
 extern bool RunningSkills;
 
+extern int curRot;
+
 //functions used by the main file
 void init(); //set variable values and stuff
 double getRotation(); //returns the local rotation of the robot
@@ -37,6 +39,8 @@ double getRegularRotation(); //between -360 and 360
 //movement functions
 void reset_position();
 double get_avr_pos(); //get the average position between the four drive motors
+
+void flyWheelThread();
 
 void set_drive_raw(int left, int right);
 void stop_drive();
