@@ -110,7 +110,6 @@ void stringsThread() {
 }
 
 void opcontrol() {
-
 	/*
 		Current controls:
 
@@ -212,7 +211,7 @@ void opcontrol() {
 		}
 
 		if(flyWheelOn)
-			FlyWheel.move_velocity(adjustableFlywheelSpeed);
+			flyWheelSpeed = adjustableFlywheelSpeed;
 
 		if(controller.get_digital(E_CONTROLLER_DIGITAL_R2))
 			Roller.move_velocity(100);
@@ -237,7 +236,7 @@ void opcontrol() {
 		}
 
 		if(controller.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT)){
-			adjustableFlywheelSpeed=350;
+			adjustableFlywheelSpeed=290;
 		}
 
 		pros::delay(20);

@@ -55,6 +55,8 @@ void flyWheelThread()
   }
 }
 
+pros::Task f_thread(flyWheelThread);
+
 void init()
 {
   autonStarted = false;
@@ -359,7 +361,6 @@ void spinPrep()
 
 void spinUp()
 {
-  FlyWheel.move_velocity(400);
   flyWheelSpeed = 400;
 }
 
@@ -374,14 +375,13 @@ bool flyRecovering()
   return std::abs(FlyWheel.get_actual_velocity() - flyWheelSpeed) > 5; //return whether the flywheel is within 10 rpm of the desired amount
 }
 
-
 void inTake() {
   IntakeOne.move(-127);
   IntakeTwo.move(-127);
 }
 void outTake() {
-  IntakeOne.move(90);
-  IntakeTwo.move(90);
+  IntakeOne.move(100);
+  IntakeTwo.move(100);
 }
 void stopIntake() {
   IntakeOne.brake();

@@ -13,11 +13,11 @@ inline void empty() {
 //add autons here
 inline void roll()
 {
-    set_drive_raw(-170, -170);
+    set_drive_raw(-180, -110);
 
-    Roller.move_velocity(100);
+    Roller.move_velocity(-120);
 
-    pros::delay(500);
+    pros::delay(1000);
 
     Roller.brake();
 
@@ -31,8 +31,8 @@ inline void roll_and_shoot()
     spinUp();
     roll();
     Turn(turnPid, 90, 1);
-    IntakeOne.move(127);
-    IntakeTwo.move(127);
+    
+    outTake();
 }
 
 inline void shoot_low() {
@@ -46,20 +46,19 @@ inline void shoot_low() {
         Turn(turnPid, -100, 1);
     }
 
-    IntakeOne.move(127);
-    IntakeTwo.move(127);
+    outTake();
 }
 
 inline void roll_and_shoot_high() 
 {
-    FlyWheel.move_velocity(350);
+    flyWheelSpeed = 350;
 
     //while flywheel is spinning up, get roller
-    set_drive_raw(-170, -170);
+    set_drive_raw(-180, -110);
 
-    Roller.move_velocity(100);
+    Roller.move_velocity(-120);
 
-    pros::delay(500);
+    pros::delay(1000);
 
     Roller.brake();
 
@@ -84,8 +83,6 @@ inline void roll_and_shoot_high()
 
 inline void skills() {
     //get first roller
-    pros::Task f_thread(flyWheelThread);
-
     set_drive_raw(-170, -170); //roller sticks out on the right so drive more on the left
     Roller.move_velocity(100);
     pros::delay(350);
